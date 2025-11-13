@@ -1,0 +1,127 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0a0e27 0%, #050811 100%);
+}
+
+.main-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  width: 100%;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Cyber Card Base Style - Tech médico oscuro */
+.cyber-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 217, 255, 0.2);
+  transform: translateY(-2px);
+  border-color: rgba(0, 217, 255, 0.3);
+}
+
+.cyber-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+}
+
+/* Cyber Button Base Style */
+.cyber-button {
+  position: relative;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+  border: none;
+  color: var(--darker-bg);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+}
+
+.cyber-button:hover {
+  box-shadow: 0 6px 30px rgba(0, 217, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.cyber-button:active {
+  transform: translateY(0);
+}
+
+.cyber-button span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Glow Text Effect */
+.glow-text {
+  color: var(--primary-blue);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .cyber-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cyber-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+}

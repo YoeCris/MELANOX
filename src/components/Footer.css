@@ -1,0 +1,152 @@
+.footer {
+  position: relative;
+  margin-top: auto;
+  z-index: 100;
+  background: rgba(10, 14, 39, 0.95);
+  border-top: 2px solid var(--primary-blue);
+  padding: 2rem 1rem;
+  box-shadow: 0 -4px 20px rgba(0, 217, 255, 0.2);
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footer-warning {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 152, 0, 0.1);
+  border: 2px solid var(--warning-orange);
+  border-radius: 8px;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  color: var(--warning-orange);
+}
+
+.footer-warning p {
+  color: var(--dark-text);
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary-blue),
+    transparent
+  );
+  opacity: 0.5;
+}
+
+.footer-credits {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.copyright {
+  color: var(--light-text);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.team {
+  color: var(--dark-text);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.team-name {
+  font-weight: 700;
+  color: var(--primary-blue);
+  letter-spacing: 0.05rem;
+  font-family: 'Orbitron', monospace;
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+.footer-tech {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.tech-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 217, 255, 0.1);
+  border: 1px solid var(--primary-blue);
+  border-radius: 20px;
+  color: var(--primary-blue);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.2);
+}
+
+.tech-badge:hover {
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+  color: var(--darker-bg);
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.tech-icon {
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .footer-warning {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-warning p {
+    font-size: 0.9rem;
+  }
+
+  .footer-tech {
+    gap: 1rem;
+  }
+
+  .tech-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-tech {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .copyright,
+  .team {
+    font-size: 0.85rem;
+  }
+}

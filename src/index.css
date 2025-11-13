@@ -1,0 +1,61 @@
+:root {
+  --primary-blue: #00d9ff;
+  --secondary-blue: #4a90e2;
+  --accent-teal: #00bfa5;
+  --dark-bg: #0a0e27;
+  --darker-bg: #050811;
+  --card-bg: #131829;
+  --white: #ffffff;
+  --dark-text: #e4e9f0;
+  --light-text: #8b95a8;
+  --border-color: #1e2842;
+  --success-green: #00e676;
+  --warning-orange: #ff9800;
+  --danger-red: #ff5252;
+  
+  font-family: 'Rajdhani', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--dark-text);
+  background-color: var(--dark-bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e27 0%, #050811 100%);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input, textarea {
+  font-family: inherit;
+}
