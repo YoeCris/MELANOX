@@ -1,19 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import {
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
-} from 'firebase/auth'
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
-import { auth, googleProvider, db } from '../config/firebase'
+import { supabase } from '../config/supabase'
 
 /**
- * AuthContext - Manejo global de autenticación
+ * AuthContext - Manejo global de autenticación con Supabase
  * 
  * Provee:
  * - user: Datos del usuario actual
  * - loading: Estado de carga
- * - loginWithGoogle: Función para login
+ * - loginWithGoogle: Función para login con Google
  * - logout: Función para cerrar sesión
  * - isAuthenticated: Boolean si está autenticado
  */
@@ -34,25 +28,21 @@ export const AuthProvider = ({ children }) => {
 
     // Escuchar cambios en autenticación
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                // Usuario autenticado
-                const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
-                setUser({
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email,
-                    displayName: firebaseUser.displayName,
-                    photoURL: firebaseUser.photoURL,
-                    ...userDoc.data()
-                })
-            } else {
-                // No autenticado
-                setUser(null)
-            }
+        // Obtener sesión actual
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null)
             setLoading(false)
         })
 
-        return unsubscribe
+        // Escuchar cambios de autenticación
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null)
+            setLoading(false)
+        })
+
+        return () => subscription.unsubscribe()
     }, [])
 
     /**
@@ -61,34 +51,23 @@ export const AuthProvider = ({ children }) => {
     const loginWithGoogle = async () => {
         try {
             setLoading(true)
-            const result = await signInWithPopup(auth, googleProvider)
 
-            // Guardar/actualizar usuario en Firestore
-            const userRef = doc(db, 'users', result.user.uid)
-            const userDoc = await getDoc(userRef)
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/analisis`,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    }
+                }
+            })
 
-            const userData = {
-                uid: result.user.uid,
-                email: result.user.email,
-                displayName: result.user.displayName,
-                photoURL: result.user.photoURL,
-                lastLogin: serverTimestamp(),
-            }
+            if (error) throw error
 
-            if (!userDoc.exists()) {
-                // Nuevo usuario
-                await setDoc(userRef, {
-                    ...userData,
-                    createdAt: serverTimestamp(),
-                    consentGiven: false,
-                    totalAnalysis: 0
-                })
-            } else {
-                // Usuario existente - solo actualizar lastLogin
-                await setDoc(userRef, userData, { merge: true })
-            }
-
-            return { success: true, isNewUser: !userDoc.exists() }
+            // Supabase redirigirá automáticamente a Google
+            // Cuando regrese, el usuario estará autenticado
+            return { success: true }
         } catch (error) {
             console.error('Error en login:', error)
             setLoading(false)
@@ -101,7 +80,9 @@ export const AuthProvider = ({ children }) => {
      */
     const logout = async () => {
         try {
-            await signOut(auth)
+            const { error } = await supabase.auth.signOut()
+            if (error) throw error
+
             setUser(null)
             return { success: true }
         } catch (error) {
@@ -109,6 +90,36 @@ export const AuthProvider = ({ children }) => {
             return { success: false, error: error.message }
         }
     }
+
+    /**
+     * Guardar/actualizar usuario en la base de datos
+     */
+    const saveUserToDatabase = async (userData) => {
+        try {
+            const { error } = await supabase
+                .from('users')
+                .upsert({
+                    id: userData.id,
+                    email: userData.email,
+                    full_name: userData.user_metadata?.full_name,
+                    avatar_url: userData.user_metadata?.avatar_url,
+                    last_login: new Date().toISOString(),
+                }, {
+                    onConflict: 'id'
+                })
+
+            if (error) throw error
+        } catch (error) {
+            console.error('Error guardando usuario:', error)
+        }
+    }
+
+    // Guardar usuario en BD cuando se autentica
+    useEffect(() => {
+        if (user) {
+            saveUserToDatabase(user)
+        }
+    }, [user])
 
     const value = {
         user,

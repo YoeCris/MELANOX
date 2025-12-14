@@ -53,19 +53,26 @@ const Header = () => {
                 onClick={() => setShowUserMenu(!showUserMenu)}
               >
                 <img
-                  src={user?.photoURL || '/default-avatar.png'}
-                  alt={user?.displayName}
+                  src={user?.user_metadata?.avatar_url || '/default-avatar.png'}
+                  alt={user?.user_metadata?.full_name || user?.email}
                   className="user-avatar"
                 />
-                <span className="user-name">{user?.displayName?.split(' ')[0]}</span>
+                <span className="user-name">
+                  {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
+                </span>
               </button>
 
               {showUserMenu && (
                 <div className="user-dropdown">
                   <div className="user-info">
-                    <img src={user?.photoURL} alt={user?.displayName} />
+                    <img
+                      src={user?.user_metadata?.avatar_url || '/default-avatar.png'}
+                      alt={user?.user_metadata?.full_name || user?.email}
+                    />
                     <div>
-                      <p className="user-dropdown-name">{user?.displayName}</p>
+                      <p className="user-dropdown-name">
+                        {user?.user_metadata?.full_name || user?.email}
+                      </p>
                       <p className="user-dropdown-email">{user?.email}</p>
                     </div>
                   </div>

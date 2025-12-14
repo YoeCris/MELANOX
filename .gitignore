@@ -42,6 +42,16 @@ lerna-debug.log*
 .env.production
 .env.development
 
+# ============ ARCHIVOS SENSIBLES ============
+# Configuración con credenciales
+src/config/firebase.js
+src/config/supabase.js
+
+# Documentación con información sensible
+*_SETUP.md
+FIREBASE_SETUP.md
+SUPABASE_SETUP.md
+
 # ============ CACHE & TEMP ============
 .cache/
 .temp/
