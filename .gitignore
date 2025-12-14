@@ -3,18 +3,7 @@
 # ================================
 
 # ============ DEPENDENCIAS ============
-# Node
 node_modules/
-package-lock.json.backup
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
 
 # ============ BUILD ============
 dist/
@@ -30,14 +19,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-# ============ ENTORNOS VIRTUALES ============
-.venv/
-venv/
-ENV/
-env/
-backend/.venv/
-backend/venv/
 
 # ============ EDITORES/IDEs ============
 .vscode/*
@@ -61,39 +42,11 @@ backend/venv/
 .env.production
 .env.development
 
-# ============ MODELO ML ============
-# Modelos entrenados (muy pesados para GitHub)
-*.h5
-*.pkl
-*.pickle
-*.pt
-*.pth
-*.onnx
-*.pb
-*.tflite
-backend/models/*.h5
-backend/models/*.pkl
-backend/checkpoints/
-
-
-# Excepciones: logos e imágenes pequeñas del proyecto
-!public/*.png
-!public/*.jpg
-!public/assets/*.png
-!public/assets/*.jpg
-!src/assets/logo*.png
-!src/assets/logo*.jpg
-
 # ============ CACHE & TEMP ============
 .cache/
 .temp/
 tmp/
 *.tmp
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
-.dmypy.json
 
 # ============ SISTEMA OPERATIVO ============
 Thumbs.db
