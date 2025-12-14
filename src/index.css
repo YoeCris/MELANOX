@@ -1857,3 +1857,364 @@ textarea {
       0 0 70px rgba(0, 217, 255, 0.3);
   }
 }
+/* ============================================
+   13. LOGIN PAGE
+   ============================================ */
+
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.login-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.login-card {
+  padding: 3rem 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.login-logo .logo-icon {
+  font-size: 3rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.login-logo .logo-text {
+  font-size: 2.5rem;
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.2rem;
+}
+
+.login-subtitle {
+  color: var(--accent-teal);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Botón de Google */
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+}
+
+.google-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0, 217, 255, 0.4);
+  border-color: var(--primary-blue);
+}
+
+.google-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.google-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Error message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 82, 82, 0.1);
+  border: 1px solid var(--danger-red);
+  border-radius: 8px;
+  color: var(--danger-red);
+  font-size: 0.9rem;
+}
+
+.error-icon {
+  font-size: 1.2rem;
+}
+
+/* Términos */
+.terms-section {
+  padding: 1rem 0;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-blue);
+}
+
+.terms-text {
+  color: var(--dark-text);
+  font-size: 0.9rem;
+}
+
+.terms-link {
+  color: var(--primary-blue);
+  text-decoration: underline;
+}
+
+.terms-link:hover {
+  color: var(--accent-teal);
+}
+
+/* Privacy info */
+.privacy-info {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(0, 217, 255, 0.05);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 8px;
+}
+
+.privacy-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.privacy-text strong {
+  display: block;
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+}
+
+.privacy-text p {
+  color: var(--light-text);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.login-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--light-text);
+  font-size: 0.85rem;
+}
+
+/* Benefits */
+.login-benefits {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--dark-text);
+  font-size: 0.9rem;
+}
+
+.benefit-icon {
+  font-size: 1.5rem;
+}
+
+/* ============================================
+   14. USER MENU (HEADER)
+   ============================================ */
+
+.user-menu-container {
+  position: relative;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 217, 255, 0.1);
+  border: 2px solid var(--primary-blue);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-button:hover {
+  background: rgba(0, 217, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+}
+
+.user-name {
+  color: var(--primary-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 250px;
+  background: var(--card-bg);
+  border: 2px solid var(--primary-blue);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.user-info {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.user-info img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+}
+
+.user-dropdown-name {
+  color: var(--dark-text);
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.user-dropdown-email {
+  color: var(--light-text);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.user-dropdown-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0 1rem;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: var(--dark-text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.user-dropdown-item:hover {
+  background: rgba(0, 217, 255, 0.1);
+  color: var(--primary-blue);
+}
+
+.user-dropdown-item span {
+  font-size: 1.2rem;
+}
+
+/* Loading screen */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--dark-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-content p {
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-benefits {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-dropdown {
+    right: -1rem;
+  }
+}
