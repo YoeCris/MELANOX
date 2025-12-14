@@ -4,7 +4,7 @@ import Footer from './components/Footer'
 import MatrixRain from './components/MatrixRain'
 import Home from './pages/Home'
 import Analysis from './pages/Analysis'
-import './App.css'
+
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <div className="app">
         <MatrixRain />
         <Header />
-        
+
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />

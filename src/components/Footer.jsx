@@ -1,5 +1,10 @@
-import './Footer.css'
-
+/**
+ * Footer - Pie de página con créditos
+ * 
+ * Muestra copyright dinámico y créditos del equipo "Los Quackers".
+ * 
+ * @returns {JSX.Element} Footer con información de copyright y equipo
+ */
 const Footer = () => {
   const currentYear = new Date().getFullYear()
 
@@ -13,7 +18,7 @@ const Footer = () => {
           <p className="team">
             Desarrollado por <span className="team-name glow-text">Los Quackers</span>
           </p>
-        </div>       
+        </div>
       </div>
     </footer>
   )

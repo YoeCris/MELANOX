@@ -1,5 +1,16 @@
-import './Home.css'
-
+/**
+ * Home - Página de inicio con información educativa sobre melanoma
+ * 
+ * Presenta información sobre:
+ * - Regla ABCDE para identificar melanomas
+ * - Señales de alerta
+ * - Factores de riesgo
+ * - Prevención
+ * 
+ * Incluye CTA para iniciar análisis.
+ * 
+ * @returns {JSX.Element} Página de inicio con contenido educativo
+ */
 const Home = () => {
   const infoCards = [
     {
@@ -75,11 +86,11 @@ const Home = () => {
             <p>
               El melanoma es el tipo más grave de cáncer de piel. Se origina en los melanocitos,
               las células que producen melanina (el pigmento que da color a la piel). Aunque es
-              menos común que otros tipos de cáncer de piel, es más peligroso porque puede 
+              menos común que otros tipos de cáncer de piel, es más peligroso porque puede
               propagarse a otras partes del cuerpo si no se detecta temprano.
             </p>
             <p className="highlight">
-              La detección temprana es crucial: el melanoma tiene una tasa de curación del 85% 
+              La detección temprana es crucial: el melanoma tiene una tasa de curación del 85%
               cuando se detecta en etapas iniciales.
             </p>
           </div>

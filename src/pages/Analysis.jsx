@@ -2,48 +2,97 @@ import { useState } from 'react'
 import { AlertTriangle, CheckCircle, Activity, Target, TrendingUp, RotateCcw } from 'lucide-react'
 import ImageUploader from '../components/ImageUploader'
 import Scanner from '../components/Scanner'
-import './Analysis.css'
+import {
+  ANALYSIS_CONFIG,
+  PREDICTION_TYPES,
+  RISK_LEVELS,
+  LESION_TYPES,
+  ABCDE_CHARACTERISTICS
+} from '../constants'
 
+/**
+ * Analysis - Página de análisis de imágenes con IA (simulado)
+ * 
+ * Permite al usuario cargar una imagen de piel y recibe un análisis simulado
+ * de melanoma. Los resultados son generados aleatoriamente para demostración
+ * y NO representan un análisis médico real.
+ * 
+ * Flujo:
+ * 1. Usuario carga imagen (drag & drop o click)
+ * 2. Se inicia animación de escaneo (3500ms)
+ * 3. Se generan resultados aleatorios
+ * 4. Se muestra grid 2x2 con resultados
+ * 
+ * Tiempo de análisis: 3500ms (sincronizado con Scanner de 3200ms + buffer)
+ * 
+ * @returns {JSX.Element} Página de análisis con uploader y resultados
+ */
 const Analysis = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [isScanning, setIsScanning] = useState(false)
   const [result, setResult] = useState(null)
 
+  /**
+   * Maneja la selección de imagen y dispara el análisis simulado
+   * @param {string|null} image - Data URL de la imagen seleccionada
+   */
   const handleImageSelect = (image) => {
     setSelectedImage(image)
     setResult(null)
-    
+
     if (image) {
       setIsScanning(true)
-      
+
+      // Simular análisis de IA con timeout de 3500ms
+      // En producción, aquí se haría una llamada a la API del modelo
       setTimeout(() => {
+        // Generar resultados aleatorios para demostración
         setResult({
-          prediction: Math.random() > 0.5 ? 'Benigno' : 'Maligno',
-          confidence: Math.floor(Math.random() * (98 - 75) + 75),
+          prediction: Math.random() > 0.5 ? PREDICTION_TYPES.benign : PREDICTION_TYPES.malignant,
+          confidence: Math.floor(
+            Math.random() * (ANALYSIS_CONFIG.maxConfidence - ANALYSIS_CONFIG.minConfidence) +
+            ANALYSIS_CONFIG.minConfidence
+          ),
           details: {
-            type: Math.random() > 0.5 ? 'Nevus Melanocítico' : 'Melanoma Superficial',
-            risk: Math.random() > 0.7 ? 'Bajo' : Math.random() > 0.4 ? 'Medio' : 'Alto',
+            type: Math.random() > 0.5 ? LESION_TYPES.nevusMelanocytic : LESION_TYPES.melanoma,
+            risk: Math.random() > 0.7
+              ? RISK_LEVELS.low
+              : Math.random() > 0.4
+                ? RISK_LEVELS.medium
+                : RISK_LEVELS.high,
             recommendation: 'Consulta con un dermatólogo para evaluación profesional',
             characteristics: {
-              asymmetry: Math.random() > 0.5 ? 'Detectada' : 'No detectada',
-              border: Math.random() > 0.5 ? 'Irregular' : 'Regular',
-              color: Math.random() > 0.5 ? 'Uniforme' : 'Variado',
-              diameter: `${(Math.random() * 10 + 2).toFixed(1)}mm`
+              asymmetry: Math.random() > 0.5
+                ? ABCDE_CHARACTERISTICS.asymmetry.detected
+                : ABCDE_CHARACTERISTICS.asymmetry.notDetected,
+              border: Math.random() > 0.5
+                ? ABCDE_CHARACTERISTICS.border.irregular
+                : ABCDE_CHARACTERISTICS.border.regular,
+              color: Math.random() > 0.5
+                ? ABCDE_CHARACTERISTICS.color.uniform
+                : ABCDE_CHARACTERISTICS.color.varied,
+              diameter: `${(
+                Math.random() * (ANALYSIS_CONFIG.maxDiameterMm - ANALYSIS_CONFIG.minDiameterMm) +
+                ANALYSIS_CONFIG.minDiameterMm
+              ).toFixed(1)}mm`
             }
           }
         })
         setIsScanning(false)
-      }, 3500)
+      }, ANALYSIS_CONFIG.durationMs)
     }
   }
 
+  /**
+   * Reinicia el estado para permitir un nuevo análisis
+   */
   const handleReset = () => {
     setSelectedImage(null)
     setIsScanning(false)
     setResult(null)
   }
 
-  const isBenign = result?.prediction === 'Benigno'
+  const isBenign = result?.prediction === PREDICTION_TYPES.benign
 
   return (
     <div className="analysis-page">
@@ -56,12 +105,12 @@ const Analysis = () => {
           // Vista sin resultados - Solo uploader centrado
           <div className="upload-only-section">
             <div className="upload-section cyber-card">
-              <ImageUploader 
+              <ImageUploader
                 onImageSelect={handleImageSelect}
                 selectedImage={selectedImage}
                 isScanning={isScanning}
               />
-              
+
               {isScanning && (
                 <div className="scanning-status">
                   <Scanner />
@@ -112,7 +161,7 @@ const Analysis = () => {
                         <span className="confidence-percentage">{result.confidence}%</span>
                       </div>
                       <div className="confidence-bar-container">
-                        <div 
+                        <div
                           className={`confidence-bar ${isBenign ? 'benign' : 'malignant'}`}
                           style={{ width: `${result.confidence}%` }}
                         >
@@ -189,7 +238,7 @@ const Analysis = () => {
                     <AlertTriangle size={60} />
                     <p>
                       Este resultado es una <strong>evaluación preliminar automatizada</strong>.
-                      NO reemplaza la evaluación de un profesional médico. Es <strong>indispensable consultar</strong> con un dermatólogo certificado para obtener 
+                      NO reemplaza la evaluación de un profesional médico. Es <strong>indispensable consultar</strong> con un dermatólogo certificado para obtener
                       un diagnóstico definitivo y plan de tratamiento apropiado.
                     </p>
                   </div>
@@ -208,7 +257,7 @@ const Analysis = () => {
               <div className="disclaimer-content">
                 <h3>Aviso Importante</h3>
                 <p>
-                  Esta herramienta proporciona una <strong>evaluación preliminar</strong> basada en inteligencia artificial. 
+                  Esta herramienta proporciona una <strong>evaluación preliminar</strong> basada en inteligencia artificial.
                   Los resultados NO constituyen un diagnóstico médico definitivo y deben ser validados por un profesional de la salud.
                 </p>
               </div>

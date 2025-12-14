@@ -1,6 +1,20 @@
 import { useEffect, useRef } from 'react'
-import './MatrixRain.css'
+import { MATRIX_CONFIG } from '../constants'
 
+/**
+ * MatrixRain - Componente de fondo animado estilo Matrix
+ * 
+ * Renderiza caracteres japoneses cayendo en un canvas de pantalla completa.
+ * Optimizado para rendimiento con control de FPS y fade effect.
+ * 
+ * Configuración:
+ * - FPS: 40 (controla velocidad de animación)
+ * - Velocidad de caída: 0.6 (más bajo = más lento)
+ * - Fade alpha: 0.08 (transparencia del efecto de estela)
+ * - Color: #00d9ff (cyan tech)
+ * 
+ * @returns {JSX.Element} Canvas con animación Matrix de fondo
+ */
 function MatrixRain() {
   const canvasRef = useRef(null)
 
@@ -11,16 +25,15 @@ function MatrixRain() {
     const ctx = canvas.getContext('2d')
     let animationFrameId
     let drops = []
-    const fontSize = 16
-    const chars = '01アイウエオカキクケコサシスセソタチツテト'
+    // Configuración desde constantes centralizadas
+    const { fontSize, fps, chars, fadeAlpha, color, resetProbability, dropSpeed } = MATRIX_CONFIG
     const charArray = chars.split('')
     let lastTime = 0
-    const fps = 20 // Controla la velocidad - más bajo = más lento
 
     const initCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
-      
+
       const columns = canvas.width / fontSize
       drops = []
       for (let i = 0; i < columns; i++) {
@@ -32,28 +45,29 @@ function MatrixRain() {
 
     function draw(currentTime) {
       animationFrameId = requestAnimationFrame(draw)
-      
+
       const elapsed = currentTime - lastTime
       if (elapsed < 1000 / fps) return
       lastTime = currentTime
 
       // Fondo con fade muy sutil para efecto de estela
-      ctx.fillStyle = 'rgba(10, 14, 39, 0.08)'
+      // Alpha desde configuración crea el efecto de "rastro" de los caracteres
+      ctx.fillStyle = `rgba(10, 14, 39, ${fadeAlpha})`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      // Color del texto Matrix - CYAN TECH
-      ctx.fillStyle = '#00d9ff'
+      // Color del texto Matrix desde configuración
+      ctx.fillStyle = color
       ctx.font = `${fontSize}px monospace`
 
       for (let i = 0; i < drops.length; i++) {
         const char = charArray[Math.floor(Math.random() * charArray.length)]
         ctx.fillText(char, i * fontSize, drops[i] * fontSize)
 
-        // Reset de gotas con probabilidad - más lento
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
+        // Reset de gotas con probabilidad desde configuración
+        if (drops[i] * fontSize > canvas.height && Math.random() > resetProbability) {
           drops[i] = 0
         }
-        drops[i] += 0.6 // Velocidad de caída más lenta (antes era 1)
+        drops[i] += dropSpeed // Velocidad de caída desde configuración
       }
     }
 

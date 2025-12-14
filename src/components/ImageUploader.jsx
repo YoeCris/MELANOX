@@ -1,7 +1,18 @@
 import { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
-import './ImageUploader.css'
+import { ACCEPTED_IMAGE_FORMATS } from '../constants'
 
+/**
+ * ImageUploader - Componente de carga de imágenes
+ * 
+ * Soporta drag & drop y selección de archivos mediante click.
+ * Acepta formatos: PNG, JPG, JPEG
+ * 
+ * @param {Function} onImageSelect - Callback cuando se selecciona una imagen válida
+ * @param {string|null} selectedImage - Data URL de la imagen seleccionada
+ * @param {boolean} isScanning - Estado de escaneo activo (deshabilita botón de limpiar)
+ * @returns {JSX.Element} Interfaz de carga con drag & drop y preview
+ */
 function ImageUploader({ onImageSelect, selectedImage, isScanning }) {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef(null)
@@ -28,8 +39,13 @@ function ImageUploader({ onImageSelect, selectedImage, isScanning }) {
     if (files && files[0]) handleFile(files[0])
   }
 
+  /**
+   * Procesa el archivo seleccionado y lo convierte a Data URL
+   * @param {File} file - Archivo de imagen a procesar
+   */
   const handleFile = (file) => {
-    if (file && file.type.startsWith('image/')) {
+    // Validar que sea un archivo de imagen en formato aceptado
+    if (file && ACCEPTED_IMAGE_FORMATS.includes(file.type)) {
       const reader = new FileReader()
       reader.onload = (e) => onImageSelect(e.target.result)
       reader.readAsDataURL(file)
