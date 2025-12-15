@@ -3036,3 +3036,109 @@ textarea {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Admin Item in Dropdown */
+.admin-item {
+  background: rgba(255, 215, 0, 0.05) !important;
+  border-left: 3px solid #FFD700;
+}
+
+.admin-item:hover {
+  background: rgba(255, 215, 0, 0.15) !important;
+}
+
+/* Feedback Button */
+.feedback-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 230, 118, 0.1);
+  border: 2px solid var(--success-green);
+  color: var(--success-green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.feedback-btn:hover {
+  background: var(--success-green);
+  color: var(--darker-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 230, 118, 0.4);
+}
+
+/* Feedback Modal */
+.feedback-modal-content {
+  max-width: 600px;
+}
+
+.feedback-form textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  background: rgba(0, 217, 255, 0.05);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--dark-text);
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.feedback-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+}
+
+.feedback-diagnosis-options {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.diagnosis-option {
+  flex: 1;
+  padding: 1rem;
+  background: rgba(0, 217, 255, 0.05);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-weight: 600;
+}
+
+.diagnosis-option:hover {
+  border-color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.1);
+}
+
+.diagnosis-option.selected {
+  border-color: var(--success-green);
+  background: rgba(0, 230, 118, 0.1);
+  color: var(--success-green);
+}
+
+.diagnosis-option.selected.malignant {
+  border-color: var(--danger-red);
+  background: rgba(255, 82, 82, 0.1);
+  color: var(--danger-red);
+}
+
+.feedback-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 230, 118, 0.1);
+  border: 1px solid var(--success-green);
+  border-radius: 20px;
+  color: var(--success-green);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}

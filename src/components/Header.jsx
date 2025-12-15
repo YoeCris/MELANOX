@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { FileText, LogOut, Microscope, Shield } from 'lucide-react'
 
 /**
  * Header - Barra de navegación principal
@@ -16,6 +17,24 @@ const Header = () => {
   const navigate = useNavigate()
   const { user, isAuthenticated, logout } = useAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const dropdownRef = useRef(null)
+
+  // Cerrar dropdown al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserMenu(false)
+      }
+    }
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showUserMenu])
 
   const handleLogout = async () => {
     await logout()
@@ -27,7 +46,7 @@ const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="logo">
-          <span className="logo-icon">🔬</span>
+          <Microscope size={28} className="logo-icon" />
           <span className="logo-text">MELANOX</span>
         </div>
 
@@ -47,7 +66,7 @@ const Header = () => {
 
           {/* Menú de usuario */}
           {isAuthenticated ? (
-            <div className="user-menu-container">
+            <div className="user-menu-container" ref={dropdownRef}>
               <button
                 className="user-button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -77,17 +96,33 @@ const Header = () => {
                     </div>
                   </div>
                   <div className="user-dropdown-divider"></div>
+
+                  {/* Admin Panel Link - Solo para admins */}
+                  {user?.email === 'yoelcriscatacora@gmail.com' && (
+                    <>
+                      <Link
+                        to="/admin"
+                        className="user-dropdown-item admin-item"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <Shield size={18} />
+                        Panel Admin
+                      </Link>
+                      <div className="user-dropdown-divider"></div>
+                    </>
+                  )}
+
                   <Link
                     to="/mis-analisis"
                     className="user-dropdown-item"
                     onClick={() => setShowUserMenu(false)}
                   >
-                    <span>📊</span>
+                    <FileText size={18} />
                     Mis Análisis
                   </Link>
                   <div className="user-dropdown-divider"></div>
                   <button className="user-dropdown-item" onClick={handleLogout}>
-                    <span>🚪</span>
+                    <LogOut size={18} />
                     Cerrar sesión
                   </button>
                 </div>

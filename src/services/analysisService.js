@@ -14,15 +14,26 @@ import { uploadImage } from './storageService'
  */
 export async function saveAnalysis(analysisData, imageDataUrl, userId = null) {
     try {
+        console.log('📝 Guardando análisis...', {
+            hasUserId: !!userId,
+            userId,
+            prediction: analysisData.prediction,
+            confidence: analysisData.confidence
+        })
+
         // Upload original image to storage
         const userIdForStorage = userId || 'anonymous'
+        console.log('📤 Subiendo imagen original...')
         const { url: imageUrl } = await uploadImage(imageDataUrl, userIdForStorage)
+        console.log('✅ Imagen original subida:', imageUrl)
 
         // Upload processed image if available
         let processedImageUrl = null
         if (analysisData.processed_image) {
+            console.log('📤 Subiendo imagen procesada...')
             const { url } = await uploadImage(analysisData.processed_image, userIdForStorage)
             processedImageUrl = url
+            console.log('✅ Imagen procesada subida:', processedImageUrl)
         }
 
         // Prepare analysis record (SOLO CAMPOS ESENCIALES)
@@ -33,7 +44,7 @@ export async function saveAnalysis(analysisData, imageDataUrl, userId = null) {
 
             // Main results
             prediction: analysisData.prediction,
-            confidence: analysisData.confidence,
+            confidence: parseFloat(parseFloat(analysisData.confidence).toFixed(2)), // Convertir a número con 2 decimales
 
             // Details (SOLO LOS ESENCIALES)
             lesion_type: analysisData.details?.type,
@@ -42,6 +53,8 @@ export async function saveAnalysis(analysisData, imageDataUrl, userId = null) {
             border: analysisData.details?.characteristics?.border
         }
 
+        console.log('💾 Insertando en base de datos...', record)
+
         // Insert into database
         const { data, error } = await supabase
             .from('analyses')
@@ -49,11 +62,15 @@ export async function saveAnalysis(analysisData, imageDataUrl, userId = null) {
             .select()
             .single()
 
-        if (error) throw error
+        if (error) {
+            console.error('❌ Error de Supabase:', error)
+            throw error
+        }
 
+        console.log('✅ Análisis guardado exitosamente:', data.id)
         return { id: data.id }
     } catch (error) {
-        console.error('Error saving analysis:', error)
+        console.error('❌ Error saving analysis:', error)
         throw new Error('Failed to save analysis: ' + error.message)
     }
 }

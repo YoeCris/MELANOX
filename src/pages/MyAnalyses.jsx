@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getUserAnalyses } from '../services/analysisService'
-import { FileText, Calendar, TrendingUp, AlertTriangle, CheckCircle, Loader } from 'lucide-react'
+import { FileText, Calendar, TrendingUp, AlertTriangle, CheckCircle, Loader, MessageSquare } from 'lucide-react'
 import { PREDICTION_TYPES } from '../constants'
+import MedicalFeedbackModal from '../components/MedicalFeedbackModal'
 
 /**
  * MyAnalyses - Página de historial de análisis del usuario
@@ -15,6 +16,7 @@ function MyAnalyses() {
     const [analyses, setAnalyses] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [feedbackModal, setFeedbackModal] = useState({ isOpen: false, analysisId: null, prediction: null })
 
     useEffect(() => {
         if (isAuthenticated && user) {
@@ -33,6 +35,13 @@ function MyAnalyses() {
             setError(err.message)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleFeedbackClose = (shouldRefresh) => {
+        setFeedbackModal({ isOpen: false, analysisId: null, prediction: null })
+        if (shouldRefresh) {
+            fetchAnalyses() // Recargar análisis después de guardar feedback
         }
     }
 
@@ -185,6 +194,29 @@ function MyAnalyses() {
                                                 </div>
                                             )}
                                         </div>
+
+                                        {/* Medical Feedback Badge */}
+                                        {analysis.medical_diagnosis && (
+                                            <div className="feedback-badge">
+                                                <MessageSquare size={16} />
+                                                Diagnóstico médico: {analysis.medical_diagnosis}
+                                            </div>
+                                        )}
+
+                                        {/* Feedback Button */}
+                                        {!analysis.medical_diagnosis && (
+                                            <button
+                                                className="cyber-button feedback-btn"
+                                                onClick={() => setFeedbackModal({
+                                                    isOpen: true,
+                                                    analysisId: analysis.id,
+                                                    prediction: analysis.prediction
+                                                })}
+                                            >
+                                                <MessageSquare size={18} />
+                                                Agregar Diagnóstico Médico
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )
@@ -192,6 +224,14 @@ function MyAnalyses() {
                     </div>
                 )}
             </div>
+
+            {/* Medical Feedback Modal */}
+            <MedicalFeedbackModal
+                isOpen={feedbackModal.isOpen}
+                onClose={handleFeedbackClose}
+                analysisId={feedbackModal.analysisId}
+                currentPrediction={feedbackModal.prediction}
+            />
         </div>
     )
 }
