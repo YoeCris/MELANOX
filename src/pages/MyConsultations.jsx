@@ -60,7 +60,11 @@ function MyConsultations() {
     if (loading) {
         return (
             <div className="loading-overlay">
-                <div className="loading-spinner"></div>
+                <div className="loading-gears">
+                    <div className="gear gear-large">⚙</div>
+                    <div className="gear gear-medium">⚙</div>
+                    <div className="gear gear-small">⚙</div>
+                </div>
                 <div className="loading-text">Cargando consultas...</div>
             </div>
         )

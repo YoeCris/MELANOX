@@ -4360,7 +4360,7 @@ textarea.cyber-input {
 
 .gear-large {
   font-size: 100px;
-  animation: spin 3s;
+  animation: spin 0.8s;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -4368,7 +4368,7 @@ textarea.cyber-input {
 
 .gear-medium {
   font-size: 60px;
-  animation: spin-reverse 2s;
+  animation: spin-reverse 1s;
   top: 20%;
   right: 10%;
   color: var(--accent-teal);
@@ -4376,7 +4376,7 @@ textarea.cyber-input {
 
 .gear-small {
   font-size: 40px;
-  animation: spin 1.5s;
+  animation: spin 0.8s;
   bottom: 15%;
   left: 15%;
   color: var(--warning-orange);

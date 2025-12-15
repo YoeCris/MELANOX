@@ -50,7 +50,7 @@ function DoctorForm() {
         } catch (err) {
             console.error('Error loading doctor:', err)
             alert('Error al cargar doctor')
-            navigate('/admin/doctors')
+            navigate('/admin/doctores')
         } finally {
             setLoading(false)
         }
@@ -133,7 +133,7 @@ function DoctorForm() {
                 await createDoctor(dataToSave)
             }
 
-            navigate('/admin/doctors')
+            navigate('/admin/doctores')
         } catch (err) {
             console.error('Error saving doctor:', err)
             alert('Error al guardar doctor: ' + err.message)
@@ -173,7 +173,7 @@ function DoctorForm() {
                     <div className="page-header">
                         <button
                             className="back-button cyber-button secondary"
-                            onClick={() => navigate('/admin/doctors')}
+                            onClick={() => navigate('/admin/doctores')}
                         >
                             <ArrowLeft size={20} />
                             Volver
@@ -306,7 +306,7 @@ function DoctorForm() {
                                 <button
                                     type="button"
                                     className="cyber-button secondary"
-                                    onClick={() => navigate('/admin/doctors')}
+                                    onClick={() => navigate('/admin/doctores')}
                                 >
                                     Cancelar
                                 </button>
