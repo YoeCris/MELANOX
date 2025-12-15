@@ -159,13 +159,9 @@ function AdminDashboard() {
 
     if (loading) {
         return (
-            <div className="analysis-page">
-                <div className="container">
-                    <div className="loading-section">
-                        <Loader size={48} className="loading-spinner" />
-                        <p>Cargando análisis...</p>
-                    </div>
-                </div>
+            <div className="loading-overlay">
+                <div className="loading-spinner"></div>
+                <div className="loading-text">Cargando análisis...</div>
             </div>
         )
     }

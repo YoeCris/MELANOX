@@ -40,20 +40,43 @@ export const AuthProvider = ({ children }) => {
             return
         }
 
-        // Verificar si es doctor
+        // Verificar si es doctor (primero por user_id, luego por email)
         try {
-            const { data, error } = await supabase
+            // Buscar por user_id
+            let { data, error } = await supabase
                 .from('doctors')
-                .select('id')
+                .select('id, user_id, email')
                 .eq('user_id', user.id)
                 .single()
 
-            if (data && !error) {
+            // Si no se encontró por user_id, buscar por email
+            if (error || !data) {
+                const { data: doctorByEmail, error: emailError } = await supabase
+                    .from('doctors')
+                    .select('id, user_id, email')
+                    .eq('email', user.email)
+                    .single()
+
+                if (doctorByEmail && !emailError) {
+                    // Vincular el user_id si aún no está vinculado
+                    if (!doctorByEmail.user_id) {
+                        await supabase
+                            .from('doctors')
+                            .update({ user_id: user.id })
+                            .eq('id', doctorByEmail.id)
+
+                        console.log('Doctor profile linked to user:', user.email)
+                    }
+
+                    setUserRole('doctor')
+                    return
+                }
+            } else if (data) {
                 setUserRole('doctor')
                 return
             }
         } catch (err) {
-            // No es doctor
+            console.error('Error checking doctor role:', err)
         }
 
         // Usuario regular

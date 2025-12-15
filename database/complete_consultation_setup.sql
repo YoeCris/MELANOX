@@ -1,18 +1,19 @@
 -- =====================================================
--- SCRIPT COMPLETO DE CONFIGURACIÓN
--- Ejecuta este archivo en Supabase SQL Editor
+-- SCRIPT COMPLETO DE CONFIGURACIÓN - ACTUALIZADO
+-- Incluye soporte para creación de doctores por email
 -- =====================================================
 
 -- Habilitar extensión UUID si no está habilitada
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- =====================================================
--- 1. CREAR TABLA DOCTORS
+-- 1. CREAR TABLA DOCTORS (ACTUALIZADA)
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS doctors (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT UNIQUE, -- Email para crear doctor antes de login
   full_name TEXT NOT NULL,
   specialization TEXT NOT NULL,
   workplace TEXT NOT NULL,
@@ -21,10 +22,14 @@ CREATE TABLE IF NOT EXISTS doctors (
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id)
+  
+  -- Constraint: debe tener email O user_id
+  CONSTRAINT doctors_email_or_user_id_check 
+  CHECK (email IS NOT NULL OR user_id IS NOT NULL)
 );
 
 CREATE INDEX IF NOT EXISTS idx_doctors_user_id ON doctors(user_id);
+CREATE INDEX IF NOT EXISTS idx_doctors_email ON doctors(email);
 CREATE INDEX IF NOT EXISTS idx_doctors_is_active ON doctors(is_active);
 
 -- =====================================================
@@ -156,3 +161,4 @@ USING (auth.jwt() ->> 'email' = 'yoelcriscatacora@gmail.com');
 -- =====================================================
 
 SELECT 'Configuración completada exitosamente!' AS status;
+SELECT 'Ahora puedes crear doctores con solo su email' AS info;

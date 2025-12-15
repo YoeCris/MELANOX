@@ -59,11 +59,9 @@ function MyConsultations() {
 
     if (loading) {
         return (
-            <div className="page-container">
-                <div className="loading-section">
-                    <Loader className="spinner" size={48} />
-                    <p>Cargando consultas...</p>
-                </div>
+            <div className="loading-overlay">
+                <div className="loading-spinner"></div>
+                <div className="loading-text">Cargando consultas...</div>
             </div>
         )
     }

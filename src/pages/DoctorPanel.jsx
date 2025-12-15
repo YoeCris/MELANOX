@@ -74,11 +74,9 @@ function DoctorPanel() {
 
     if (loading) {
         return (
-            <div className="page-container">
-                <div className="loading-section">
-                    <Loader className="spinner" size={48} />
-                    <p>Cargando casos...</p>
-                </div>
+            <div className="loading-overlay">
+                <div className="loading-spinner"></div>
+                <div className="loading-text">Cargando casos...</div>
             </div>
         )
     }

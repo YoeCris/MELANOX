@@ -74,7 +74,8 @@ export async function createDoctor(doctorData) {
         const { data, error } = await supabase
             .from('doctors')
             .insert({
-                user_id: doctorData.user_id,
+                email: doctorData.email,
+                user_id: doctorData.user_id || null,
                 full_name: doctorData.full_name,
                 specialization: doctorData.specialization,
                 workplace: doctorData.workplace,

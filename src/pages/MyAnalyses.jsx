@@ -69,13 +69,9 @@ function MyAnalyses() {
 
     if (loading) {
         return (
-            <div className="analysis-page">
-                <div className="container">
-                    <div className="loading-section">
-                        <Loader size={48} className="loading-spinner" />
-                        <p>Cargando análisis...</p>
-                    </div>
-                </div>
+            <div className="loading-overlay">
+                <div className="loading-spinner"></div>
+                <div className="loading-text">Cargando análisis...</div>
             </div>
         )
     }
@@ -136,7 +132,7 @@ function MyAnalyses() {
                                     {/* Analysis Info */}
                                     <div className="analysis-card-content">
                                         {/* Prediction Badge */}
-                                        <div className={`prediction - badge ${ isBenign ? 'benign' : 'malignant' } `}>
+                                        <div className={`prediction - badge ${isBenign ? 'benign' : 'malignant'} `}>
                                             {isBenign ? (
                                                 <CheckCircle size={20} />
                                             ) : (
@@ -167,7 +163,7 @@ function MyAnalyses() {
                                             {analysis.risk_level && (
                                                 <div className="detail-row">
                                                     <span className="detail-label">Riesgo:</span>
-                                                    <span className={`risk - badge risk - ${ analysis.risk_level.toLowerCase() } `}>
+                                                    <span className={`risk - badge risk - ${analysis.risk_level.toLowerCase()} `}>
                                                         {analysis.risk_level}
                                                     </span>
                                                 </div>
@@ -191,8 +187,15 @@ function MyAnalyses() {
                                         {/* Consultation Button */}
                                         <button
                                             className="cyber-button consultation-btn"
-                                            onClick={() => navigate('/consultar-doctor', { 
-                                                state: { analysis } 
+                                            onClick={() => navigate('/consultar-doctor', {
+                                                state: {
+                                                    analysis: {
+                                                        id: analysis.id,
+                                                        prediction: analysis.prediction,
+                                                        confidence: analysis.confidence,
+                                                        image_url: analysis.image_url
+                                                    }
+                                                }
                                             })}
                                         >
                                             <Stethoscope size={18} />

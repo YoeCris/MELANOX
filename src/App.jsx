@@ -15,6 +15,7 @@ import ConsultationForm from './pages/ConsultationForm'
 import MyConsultations from './pages/MyConsultations'
 import DoctorPanel from './pages/DoctorPanel'
 import AdminDoctors from './pages/AdminDoctors'
+import DoctorForm from './pages/DoctorForm'
 
 function App() {
   return (
@@ -51,6 +52,22 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AdminDoctors />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/doctor/new"
+                  element={
+                    <ProtectedRoute>
+                      <DoctorForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/doctor/edit/:id"
+                  element={
+                    <ProtectedRoute>
+                      <DoctorForm />
                     </ProtectedRoute>
                   }
                 />

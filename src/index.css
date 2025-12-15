@@ -2312,6 +2312,7 @@ textarea {
     font-size: 0.9rem;
   }
 }
+
 /* ============================================
    LOGIN MODAL
    ============================================ */
@@ -2341,7 +2342,7 @@ textarea {
   max-width: 500px;
   width: 90%;
   position: relative;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 217, 255, 0.3),
     0 0 100px rgba(0, 217, 255, 0.2);
   animation: slideUp 0.4s ease;
@@ -2352,6 +2353,7 @@ textarea {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2511,6 +2513,7 @@ textarea {
     transform: scale(0);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -2606,8 +2609,13 @@ textarea {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Empty State */
@@ -3377,10 +3385,21 @@ textarea.cyber-input {
   font-size: 0.9rem;
 }
 
-.status-icon.pending { color: var(--warning-orange); }
-.status-icon.in-progress { color: var(--primary-blue); }
-.status-icon.completed { color: var(--success-green); }
-.status-icon.cancelled { color: var(--danger-red); }
+.status-icon.pending {
+  color: var(--warning-orange);
+}
+
+.status-icon.in-progress {
+  color: var(--primary-blue);
+}
+
+.status-icon.completed {
+  color: var(--success-green);
+}
+
+.status-icon.cancelled {
+  color: var(--danger-red);
+}
 
 .consultation-body {
   margin-top: 1rem;
@@ -3659,7 +3678,8 @@ textarea.cyber-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
+  /* Increased to be above footer */
   padding: 1rem;
 }
 
@@ -3730,5 +3750,716 @@ textarea.cyber-input {
 
   .doctors-table-container {
     overflow-x: scroll;
+  }
+}
+/* Doctor Modal Compact Layout */
+.doctor-modal {
+  max-width: 700px !important;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.doctor-form-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Compact Image Upload */
+.image-upload-container-compact {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.image-preview-compact {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-blue);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+}
+
+.image-preview-compact img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-label-compact {
+  cursor: pointer;
+  display: block;
+}
+
+.upload-placeholder-compact {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--light-text);
+  transition: all 0.3s ease;
+  background: var(--darker-bg);
+}
+
+.upload-placeholder-compact:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.05);
+  transform: scale(1.05);
+}
+
+.upload-placeholder-compact svg {
+  color: var(--accent-teal);
+}
+
+.upload-placeholder-compact span {
+  font-size: 0.75rem;
+  text-align: center;
+  max-width: 80px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+  
+  .doctor-modal {
+    max-width: 95vw;
+  }
+}
+
+/* Global Loading Animation - Cyber Style */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 39, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+}
+
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+.loading-text {
+  margin-top: 1.5rem;
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Improved Modal Design */
+.doctor-modal {
+  max-width: 650px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  padding: 2rem !important;
+}
+
+.doctor-modal h2 {
+  margin: 0 0 1.5rem 0;
+  color: var(--primary-blue);
+  font-size: 1.5rem;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.doctor-form-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+}
+
+/* Ensure modal content is scrollable */
+.doctor-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.doctor-modal::-webkit-scrollbar-track {
+  background: var(--darker-bg);
+  border-radius: 4px;
+}
+
+.doctor-modal::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 4px;
+}
+
+.doctor-modal::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-teal);
+}
+
+/* Horizontal Doctor Form Layout */
+.doctor-form-horizontal {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1.5rem;
+}
+
+.form-left-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doctor-modal {
+  max-width: 600px !important;
+  max-height: 80vh !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .doctor-form-horizontal {
+    grid-template-columns: 1fr;
+  }
+}
+/* Global Loading Animation - Cyber Style with Gear */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 39, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+}
+
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  color: var(--primary-blue);
+  animation: spin 2s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.5));
+}
+
+.loading-spinner::before {
+  content: "⚙";
+  font-size: 80px;
+  display: block;
+}
+
+.loading-text {
+  margin-top: 1.5rem;
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Professional Doctor Form - Wide Layout */
+.doctor-modal {
+  max-width: 900px !important;
+  width: 90vw !important;
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+  padding: 2.5rem !important;
+}
+
+.doctor-modal h2 {
+  margin: 0 0 2rem 0;
+  color: var(--primary-blue);
+  font-size: 1.8rem;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.doctor-form-horizontal {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.form-left-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-right-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-right-section > .form-group:first-child,
+.form-right-section > .form-group:nth-child(2) {
+  grid-column: 1 / -1;
+}
+
+.image-preview-compact {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid var(--primary-blue);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+}
+
+.image-preview-compact img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-placeholder-compact {
+  width: 160px;
+  height: 160px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--light-text);
+  transition: all 0.3s ease;
+  background: var(--darker-bg);
+}
+
+.upload-placeholder-compact:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.05);
+  transform: scale(1.02);
+}
+
+.upload-placeholder-compact svg {
+  color: var(--accent-teal);
+}
+
+.modal-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .doctor-form-horizontal {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-right-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .doctor-modal {
+    width: 95vw !important;
+    padding: 1.5rem !important;
+  }
+}
+
+/* Modal Overlay - Fixed spacing from header/footer */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Doctor Modal - Compact and Responsive */
+.doctor-modal {
+  max-width: 850px !important;
+  width: 90vw !important;
+  max-height: 75vh !important;
+  overflow-y: auto !important;
+  padding: 2rem !important;
+  margin: auto;
+  background: var(--darker-bg);
+  border: 2px solid var(--primary-blue);
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+}
+
+.doctor-modal h2 {
+  margin: 0 0 1.5rem 0;
+  color: var(--primary-blue);
+  font-size: 1.6rem;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.doctor-form-horizontal {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.form-left-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-right-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-right-section > .form-group:first-child,
+.form-right-section > .form-group:nth-child(2) {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  margin-bottom: 0 !important;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--light-text);
+}
+
+.image-preview-compact {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid var(--primary-blue);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+}
+
+.upload-placeholder-compact {
+  width: 140px;
+  height: 140px;
+  border: 2px dashed var(--border-color);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: var(--light-text);
+  transition: all 0.3s ease;
+  background: var(--darker-bg);
+  cursor: pointer;
+}
+
+.upload-placeholder-compact:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.05);
+  transform: scale(1.02);
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1rem;
+  }
+  
+  .doctor-modal {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    padding: 1.5rem !important;
+  }
+  
+  .doctor-modal h2 {
+    font-size: 1.3rem;
+  }
+  
+  .doctor-form-horizontal {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-right-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .image-preview-compact,
+  .upload-placeholder-compact {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor-modal {
+    padding: 1rem !important;
+  }
+  
+  .doctor-modal h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* Scrollbar styling for modal */
+.doctor-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.doctor-modal::-webkit-scrollbar-track {
+  background: var(--darker-bg);
+  border-radius: 4px;
+}
+
+.doctor-modal::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 4px;
+}
+
+.doctor-modal::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-teal);
+}
+
+/* Loading Animation - 3 Gears Spinning */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 39, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+}
+
+.loading-gears {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gear {
+  position: absolute;
+  color: var(--primary-blue);
+  filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.5));
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.gear-large {
+  font-size: 100px;
+  animation: spin 3s;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.gear-medium {
+  font-size: 60px;
+  animation: spin-reverse 2s;
+  top: 20%;
+  right: 10%;
+  color: var(--accent-teal);
+}
+
+.gear-small {
+  font-size: 40px;
+  animation: spin 1.5s;
+  bottom: 15%;
+  left: 15%;
+  color: var(--warning-orange);
+}
+
+.loading-text {
+  margin-top: 3rem;
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Doctor Form Page Layout */
+.doctor-form-page {
+  min-height: calc(100vh - 80px);
+  padding: 2rem 0;
+}
+
+.doctor-form-page .page-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doctor-form-page .back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctor-form-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem;
+}
+
+.doctor-form-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .doctor-form-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .doctor-form-card {
+    padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
   }
 }
