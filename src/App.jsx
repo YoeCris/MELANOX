@@ -10,6 +10,11 @@ import Analysis from './pages/Analysis'
 import Login from './pages/Login'
 import MyAnalyses from './pages/MyAnalyses'
 import AdminDashboard from './pages/AdminDashboard'
+import DoctorsList from './pages/DoctorsList'
+import ConsultationForm from './pages/ConsultationForm'
+import MyConsultations from './pages/MyConsultations'
+import DoctorPanel from './pages/DoctorPanel'
+import AdminDoctors from './pages/AdminDoctors'
 
 function App() {
   return (
@@ -38,6 +43,46 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/doctores"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDoctors />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/consultar-doctor"
+                  element={
+                    <ProtectedRoute>
+                      <DoctorsList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/nueva-consulta"
+                  element={
+                    <ProtectedRoute>
+                      <ConsultationForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/mis-consultas"
+                  element={
+                    <ProtectedRoute>
+                      <MyConsultations />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/doctor/casos"
+                  element={
+                    <ProtectedRoute>
+                      <DoctorPanel />
                     </ProtectedRoute>
                   }
                 />

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getUserAnalyses } from '../services/analysisService'
-import { FileText, Calendar, TrendingUp, AlertTriangle, CheckCircle, Loader, MessageSquare } from 'lucide-react'
+import { FileText, Calendar, TrendingUp, AlertTriangle, CheckCircle, Loader, Stethoscope } from 'lucide-react'
 import { PREDICTION_TYPES } from '../constants'
-import MedicalFeedbackModal from '../components/MedicalFeedbackModal'
 
 /**
  * MyAnalyses - Página de historial de análisis del usuario
@@ -12,11 +12,11 @@ import MedicalFeedbackModal from '../components/MedicalFeedbackModal'
  * con preview de imagen, predicción, confianza y fecha
  */
 function MyAnalyses() {
+    const navigate = useNavigate()
     const { user, isAuthenticated } = useAuth()
     const [analyses, setAnalyses] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [feedbackModal, setFeedbackModal] = useState({ isOpen: false, analysisId: null, prediction: null })
 
     useEffect(() => {
         if (isAuthenticated && user) {
@@ -35,13 +35,6 @@ function MyAnalyses() {
             setError(err.message)
         } finally {
             setLoading(false)
-        }
-    }
-
-    const handleFeedbackClose = (shouldRefresh) => {
-        setFeedbackModal({ isOpen: false, analysisId: null, prediction: null })
-        if (shouldRefresh) {
-            fetchAnalyses() // Recargar análisis después de guardar feedback
         }
     }
 
@@ -143,7 +136,7 @@ function MyAnalyses() {
                                     {/* Analysis Info */}
                                     <div className="analysis-card-content">
                                         {/* Prediction Badge */}
-                                        <div className={`prediction-badge ${isBenign ? 'benign' : 'malignant'}`}>
+                                        <div className={`prediction - badge ${ isBenign ? 'benign' : 'malignant' } `}>
                                             {isBenign ? (
                                                 <CheckCircle size={20} />
                                             ) : (
@@ -174,7 +167,7 @@ function MyAnalyses() {
                                             {analysis.risk_level && (
                                                 <div className="detail-row">
                                                     <span className="detail-label">Riesgo:</span>
-                                                    <span className={`risk-badge risk-${analysis.risk_level.toLowerCase()}`}>
+                                                    <span className={`risk - badge risk - ${ analysis.risk_level.toLowerCase() } `}>
                                                         {analysis.risk_level}
                                                     </span>
                                                 </div>
@@ -195,28 +188,16 @@ function MyAnalyses() {
                                             )}
                                         </div>
 
-                                        {/* Medical Feedback Badge */}
-                                        {analysis.medical_diagnosis && (
-                                            <div className="feedback-badge">
-                                                <MessageSquare size={16} />
-                                                Diagnóstico médico: {analysis.medical_diagnosis}
-                                            </div>
-                                        )}
-
-                                        {/* Feedback Button */}
-                                        {!analysis.medical_diagnosis && (
-                                            <button
-                                                className="cyber-button feedback-btn"
-                                                onClick={() => setFeedbackModal({
-                                                    isOpen: true,
-                                                    analysisId: analysis.id,
-                                                    prediction: analysis.prediction
-                                                })}
-                                            >
-                                                <MessageSquare size={18} />
-                                                Agregar Diagnóstico Médico
-                                            </button>
-                                        )}
+                                        {/* Consultation Button */}
+                                        <button
+                                            className="cyber-button consultation-btn"
+                                            onClick={() => navigate('/consultar-doctor', { 
+                                                state: { analysis } 
+                                            })}
+                                        >
+                                            <Stethoscope size={18} />
+                                            Consultar con un Doctor
+                                        </button>
                                     </div>
                                 </div>
                             )
@@ -224,14 +205,6 @@ function MyAnalyses() {
                     </div>
                 )}
             </div>
-
-            {/* Medical Feedback Modal */}
-            <MedicalFeedbackModal
-                isOpen={feedbackModal.isOpen}
-                onClose={handleFeedbackClose}
-                analysisId={feedbackModal.analysisId}
-                currentPrediction={feedbackModal.prediction}
-            />
         </div>
     )
 }

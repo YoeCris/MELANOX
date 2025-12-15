@@ -25,12 +25,47 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [userRole, setUserRole] = useState(null)
+
+    // Determinar rol del usuario
+    const determineUserRole = async (user) => {
+        if (!user) {
+            setUserRole(null)
+            return
+        }
+
+        // Super Admin
+        if (user.email === 'yoelcriscatacora@gmail.com') {
+            setUserRole('super_admin')
+            return
+        }
+
+        // Verificar si es doctor
+        try {
+            const { data, error } = await supabase
+                .from('doctors')
+                .select('id')
+                .eq('user_id', user.id)
+                .single()
+
+            if (data && !error) {
+                setUserRole('doctor')
+                return
+            }
+        } catch (err) {
+            // No es doctor
+        }
+
+        // Usuario regular
+        setUserRole('user')
+    }
 
     // Escuchar cambios en autenticación
     useEffect(() => {
         // Obtener sesión actual
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null)
+            determineUserRole(session?.user ?? null)
             setLoading(false)
         })
 
@@ -39,6 +74,7 @@ export const AuthProvider = ({ children }) => {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null)
+            determineUserRole(session?.user ?? null)
             setLoading(false)
         })
 
@@ -147,13 +183,23 @@ export const AuthProvider = ({ children }) => {
         }
     }, [user])
 
+    // Helper functions para verificar roles
+    const isSuperAdmin = () => userRole === 'super_admin'
+    const isDoctor = () => userRole === 'doctor'
+    const isUser = () => userRole === 'user'
+    const hasRole = (role) => userRole === role
+
     const value = {
         user,
         loading,
+        userRole,
+        isAuthenticated: !!user,
+        isSuperAdmin,
+        isDoctor,
+        isUser,
+        hasRole,
         loginWithGoogle,
-        loginWithEmail,
-        logout,
-        isAuthenticated: !!user
+        logout
     }
 
     return (
@@ -162,3 +208,5 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     )
 }
+
+export default AuthContext
