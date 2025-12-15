@@ -33,53 +33,52 @@ const Analysis = () => {
   const [result, setResult] = useState(null)
 
   /**
-   * Maneja la selección de imagen y dispara el análisis simulado
+   * Maneja la selección de imagen y dispara el análisis real con la API
    * @param {string|null} image - Data URL de la imagen seleccionada
    */
-  const handleImageSelect = (image) => {
+  const handleImageSelect = async (image) => {
     setSelectedImage(image)
     setResult(null)
 
     if (image) {
       setIsScanning(true)
 
-      // Simular análisis de IA con timeout de 3500ms
-      // En producción, aquí se haría una llamada a la API del modelo
-      setTimeout(() => {
-        // Generar resultados aleatorios para demostración
+      try {
+        // Importar dinámicamente el servicio API
+        const { analyzeImage } = await import('../services/apiService')
+
+        // Llamar a la API real
+        const apiResult = await analyzeImage(image)
+
+        // Formatear resultados para el componente
         setResult({
-          prediction: Math.random() > 0.5 ? PREDICTION_TYPES.benign : PREDICTION_TYPES.malignant,
-          confidence: Math.floor(
-            Math.random() * (ANALYSIS_CONFIG.maxConfidence - ANALYSIS_CONFIG.minConfidence) +
-            ANALYSIS_CONFIG.minConfidence
-          ),
+          prediction: apiResult.prediction,
+          confidence: apiResult.confidence,
           details: {
-            type: Math.random() > 0.5 ? LESION_TYPES.nevusMelanocytic : LESION_TYPES.melanoma,
-            risk: Math.random() > 0.7
-              ? RISK_LEVELS.low
-              : Math.random() > 0.4
-                ? RISK_LEVELS.medium
-                : RISK_LEVELS.high,
-            recommendation: 'Consulta con un dermatólogo para evaluación profesional',
-            characteristics: {
-              asymmetry: Math.random() > 0.5
-                ? ABCDE_CHARACTERISTICS.asymmetry.detected
-                : ABCDE_CHARACTERISTICS.asymmetry.notDetected,
-              border: Math.random() > 0.5
-                ? ABCDE_CHARACTERISTICS.border.irregular
-                : ABCDE_CHARACTERISTICS.border.regular,
-              color: Math.random() > 0.5
-                ? ABCDE_CHARACTERISTICS.color.uniform
-                : ABCDE_CHARACTERISTICS.color.varied,
-              diameter: `${(
-                Math.random() * (ANALYSIS_CONFIG.maxDiameterMm - ANALYSIS_CONFIG.minDiameterMm) +
-                ANALYSIS_CONFIG.minDiameterMm
-              ).toFixed(1)}mm`
-            }
-          }
+            type: apiResult.details.type,
+            risk: apiResult.details.risk,
+            recommendation: apiResult.details.recommendation,
+            characteristics: apiResult.details.characteristics
+          },
+          // Datos adicionales del análisis CV
+          lesionDetected: apiResult.lesion_detected,
+          lesionLocation: apiResult.lesion_location,
+          lesionMetrics: apiResult.lesion_metrics,
+          abcdeAnalysis: apiResult.abcde_analysis,
+          processedImage: apiResult.processed_image
         })
+
         setIsScanning(false)
-      }, ANALYSIS_CONFIG.durationMs)
+      } catch (error) {
+        console.error('Error en análisis:', error)
+        setIsScanning(false)
+
+        // Mostrar error al usuario
+        setResult({
+          error: true,
+          errorMessage: error.message || 'Error al analizar la imagen. Verifica que el servidor backend esté ejecutándose.'
+        })
+      }
     }
   }
 
@@ -118,19 +117,41 @@ const Analysis = () => {
               )}
             </div>
           </div>
+        ) : result.error ? (
+          // Vista de error
+          <div className="error-section">
+            <div className="error-card cyber-card">
+              <AlertTriangle size={60} className="error-icon" />
+              <h2>Error en el Análisis</h2>
+              <p className="error-message">{result.errorMessage}</p>
+              <button className="cyber-button reset-btn" onClick={handleReset}>
+                <RotateCcw size={20} />
+                <span>Intentar de Nuevo</span>
+              </button>
+            </div>
+          </div>
         ) : (
           // Vista con resultados - Grid 2x2
           <>
             <div className="results-grid-2x2">
-              {/* Grid Item 1: Imagen procesada */}
+              {/* Grid Item 1: Imagen procesada con overlay */}
               <div className="grid-item processed-image-card cyber-card">
                 <h3 className="section-title">
                   <span className="icon">🔬</span>
-                  Imagen Analizada
+                  {result.processedImage ? 'Imagen Procesada' : 'Imagen Analizada'}
                 </h3>
                 <div className="image-preview">
-                  <img src={selectedImage} alt="Imagen analizada" />
+                  <img
+                    src={result.processedImage || selectedImage}
+                    alt={result.processedImage ? "Imagen con bordes detectados" : "Imagen analizada"}
+                  />
                 </div>
+                {result.lesionDetected && result.lesionMetrics && (
+                  <div className="lesion-info">
+                    <p><strong>Diámetro:</strong> {result.lesionMetrics.diameter_mm}mm</p>
+                    <p><strong>Área:</strong> {result.lesionMetrics.area_pixels}px²</p>
+                  </div>
+                )}
               </div>
 
               {/* Grid Item 2: Resumen (PARTE 1) */}
@@ -205,16 +226,6 @@ const Analysis = () => {
                           <div className="detail-label">Bordes</div>
                           <div className="detail-value">{result.details.characteristics.border}</div>
                         </div>
-
-                        <div className="detail-card">
-                          <div className="detail-label">Color</div>
-                          <div className="detail-value">{result.details.characteristics.color}</div>
-                        </div>
-
-                        <div className="detail-card">
-                          <div className="detail-label">Diámetro</div>
-                          <div className="detail-value">{result.details.characteristics.diameter}</div>
-                        </div>
                       </>
                     )}
                   </div>
@@ -248,18 +259,6 @@ const Analysis = () => {
                     <span>Analizar Nueva Imagen</span>
                   </button>
                 </div>
-              </div>
-            </div>
-
-            {/* Disclaimer general */}
-            <div className="disclaimer cyber-card">
-              <AlertTriangle className="disclaimer-icon" size={24} />
-              <div className="disclaimer-content">
-                <h3>Aviso Importante</h3>
-                <p>
-                  Esta herramienta proporciona una <strong>evaluación preliminar</strong> basada en inteligencia artificial.
-                  Los resultados NO constituyen un diagnóstico médico definitivo y deben ser validados por un profesional de la salud.
-                </p>
               </div>
             </div>
           </>

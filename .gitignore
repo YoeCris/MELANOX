@@ -41,6 +41,7 @@ lerna-debug.log*
 .env.*.local
 .env.production
 .env.development
+.env.example
 
 # ============ ARCHIVOS SENSIBLES ============
 # Configuración con credenciales

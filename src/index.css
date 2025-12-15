@@ -1857,6 +1857,7 @@ textarea {
       0 0 70px rgba(0, 217, 255, 0.3);
   }
 }
+
 /* ============================================
    13. LOGIN PAGE
    ============================================ */
@@ -2195,7 +2196,9 @@ textarea {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-content p {
@@ -2216,5 +2219,96 @@ textarea {
 
   .user-dropdown {
     right: -1rem;
+  }
+}
+
+/* ============================================
+   ERROR DISPLAY & LESION INFO
+   ============================================ */
+
+/* Error Section */
+.error-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.error-card {
+  padding: 3rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.error-icon {
+  color: var(--danger-red);
+  filter: drop-shadow(0 0 20px rgba(255, 82, 82, 0.5));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.error-card h2 {
+  color: var(--danger-red);
+  font-size: 1.8rem;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 82, 82, 0.3);
+}
+
+.error-message {
+  color: var(--dark-text);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Lesion Info */
+.lesion-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 217, 255, 0.05);
+  border: 1px solid var(--primary-blue);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lesion-info p {
+  margin: 0;
+  color: var(--dark-text);
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesion-info strong {
+  color: var(--primary-blue);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .error-card {
+    padding: 2rem 1rem;
+  }
+
+  .error-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .error-message {
+    font-size: 1rem;
+  }
+
+  .lesion-info {
+    font-size: 0.9rem;
   }
 }
