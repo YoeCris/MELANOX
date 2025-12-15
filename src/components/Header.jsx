@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { FileText, LogOut, Microscope, Shield } from 'lucide-react'
+import { Microscope, FileText, LogOut, Shield, Stethoscope, Briefcase, Users } from 'lucide-react'
 
 /**
  * Header - Barra de navegación principal
@@ -15,7 +15,7 @@ import { FileText, LogOut, Microscope, Shield } from 'lucide-react'
 const Header = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, logout, isSuperAdmin, isDoctor } = useAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -53,13 +53,13 @@ const Header = () => {
         <nav className="nav">
           <Link
             to="/"
-            className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+            className={`nav - link ${ location.pathname === '/' ? 'active' : '' } `}
           >
             Inicio
           </Link>
           <Link
             to="/analisis"
-            className={`nav-link ${location.pathname === '/analisis' ? 'active' : ''}`}
+            className={`nav - link ${ location.pathname === '/analisis' ? 'active' : '' } `}
           >
             Análisis
           </Link>
@@ -97,8 +97,8 @@ const Header = () => {
                   </div>
                   <div className="user-dropdown-divider"></div>
 
-                  {/* Admin Panel Link - Solo para admins */}
-                  {user?.email === 'yoelcriscatacora@gmail.com' && (
+                  {/* Admin Panel Links - Solo para super admins */}
+                  {isSuperAdmin() && (
                     <>
                       <Link
                         to="/admin"
@@ -107,6 +107,29 @@ const Header = () => {
                       >
                         <Shield size={18} />
                         Panel Admin
+                      </Link>
+                      <Link
+                        to="/admin/doctores"
+                        className="user-dropdown-item admin-item"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <Users size={18} />
+                        Gestión de Doctores
+                      </Link>
+                      <div className="user-dropdown-divider"></div>
+                    </>
+                  )}
+
+                  {/* Doctor Panel Link - Solo para doctores */}
+                  {isDoctor() && (
+                    <>
+                      <Link
+                        to="/doctor/casos"
+                        className="user-dropdown-item doctor-item"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <Briefcase size={18} />
+                        Mis Casos
                       </Link>
                       <div className="user-dropdown-divider"></div>
                     </>
@@ -119,6 +142,15 @@ const Header = () => {
                   >
                     <FileText size={18} />
                     Mis Análisis
+                  </Link>
+                  
+                  <Link
+                    to="/mis-consultas"
+                    className="user-dropdown-item"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <Stethoscope size={18} />
+                    Mis Consultas
                   </Link>
                   <div className="user-dropdown-divider"></div>
                   <button className="user-dropdown-item" onClick={handleLogout}>
