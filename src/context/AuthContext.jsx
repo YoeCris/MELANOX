@@ -76,6 +76,32 @@ export const AuthProvider = ({ children }) => {
     }
 
     /**
+     * Login con Magic Link (email sin contraseña)
+     */
+    const loginWithEmail = async (email) => {
+        try {
+            setLoading(true)
+
+            const { error } = await supabase.auth.signInWithOtp({
+                email,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/analisis`,
+                    shouldCreateUser: true
+                }
+            })
+
+            if (error) throw error
+
+            setLoading(false)
+            return { success: true }
+        } catch (error) {
+            console.error('Error en login con email:', error)
+            setLoading(false)
+            return { success: false, error: error.message }
+        }
+    }
+
+    /**
      * Cerrar sesión
      */
     const logout = async () => {
@@ -125,6 +151,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         loginWithGoogle,
+        loginWithEmail,
         logout,
         isAuthenticated: !!user
     }

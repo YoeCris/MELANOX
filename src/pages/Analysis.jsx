@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { AlertTriangle, CheckCircle, Activity, Target, TrendingUp, RotateCcw } from 'lucide-react'
 import ImageUploader from '../components/ImageUploader'
 import Scanner from '../components/Scanner'
+import LoginModal from '../components/LoginModal'
+import { useAuth } from '../context/AuthContext'
+import { useAnalysis } from '../context/AnalysisContext'
+import { saveAnalysis } from '../services/analysisService'
 import {
   ANALYSIS_CONFIG,
   PREDICTION_TYPES,
@@ -32,6 +36,10 @@ const Analysis = () => {
   const [isScanning, setIsScanning] = useState(false)
   const [result, setResult] = useState(null)
 
+  // Auth and analysis context
+  const { user } = useAuth()
+  const { canAnalyze, incrementAnalysisCount, showLoginPrompt, setShowLoginPrompt } = useAnalysis()
+
   /**
    * Maneja la selección de imagen y dispara el análisis real con la API
    * @param {string|null} image - Data URL de la imagen seleccionada
@@ -41,6 +49,12 @@ const Analysis = () => {
     setResult(null)
 
     if (image) {
+      // Check if user can analyze
+      if (!canAnalyze()) {
+        setShowLoginPrompt(true)
+        return
+      }
+
       setIsScanning(true)
 
       try {
@@ -51,7 +65,7 @@ const Analysis = () => {
         const apiResult = await analyzeImage(image)
 
         // Formatear resultados para el componente
-        setResult({
+        const formattedResult = {
           prediction: apiResult.prediction,
           confidence: apiResult.confidence,
           details: {
@@ -66,9 +80,24 @@ const Analysis = () => {
           lesionMetrics: apiResult.lesion_metrics,
           abcdeAnalysis: apiResult.abcde_analysis,
           processedImage: apiResult.processed_image
-        })
+        }
 
+        setResult(formattedResult)
         setIsScanning(false)
+
+        // Guardar análisis en la base de datos
+        try {
+          const userId = user?.id || null
+          await saveAnalysis(apiResult, image, userId)
+          console.log('✅ Análisis guardado en la base de datos')
+        } catch (saveError) {
+          console.error('Error guardando análisis:', saveError)
+          // No bloqueamos la UI si falla el guardado
+        }
+
+        // Incrementar contador de análisis (solo para usuarios no logueados)
+        incrementAnalysisCount()
+
       } catch (error) {
         console.error('Error en análisis:', error)
         setIsScanning(false)
@@ -264,6 +293,12 @@ const Analysis = () => {
           </>
         )}
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
+      />
     </div>
   )
 }

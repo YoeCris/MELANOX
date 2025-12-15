@@ -77,6 +77,15 @@ const Header = () => {
                     </div>
                   </div>
                   <div className="user-dropdown-divider"></div>
+                  <Link
+                    to="/mis-analisis"
+                    className="user-dropdown-item"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <span>📊</span>
+                    Mis Análisis
+                  </Link>
+                  <div className="user-dropdown-divider"></div>
                   <button className="user-dropdown-item" onClick={handleLogout}>
                     <span>🚪</span>
                     Cerrar sesión
