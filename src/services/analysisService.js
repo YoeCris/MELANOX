@@ -98,20 +98,13 @@ export async function getUserAnalyses(userId) {
 
 /**
  * Get all analyses (admin only)
- * @returns {Promise<Array>} List of all analyses with user info
+ * @returns {Promise<Array>} List of all analyses
  */
 export async function getAllAnalyses() {
     try {
         const { data, error } = await supabase
             .from('analyses')
-            .select(`
-        *,
-        users (
-          email,
-          full_name,
-          avatar_url
-        )
-      `)
+            .select('*')
             .order('created_at', { ascending: false })
 
         if (error) throw error

@@ -72,13 +72,6 @@ function AdminDashboard() {
             filtered = filtered.filter(a => a.risk_level === filters.riskLevel)
         }
 
-        // Filter by user email
-        if (filters.userEmail) {
-            filtered = filtered.filter(a =>
-                a.users?.email?.toLowerCase().includes(filters.userEmail.toLowerCase())
-            )
-        }
-
         // Filter by date range
         if (filters.dateFrom) {
             filtered = filtered.filter(a =>
