@@ -7,7 +7,7 @@ class Config:
     """Application configuration"""
     
     # Model Configuration
-    MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model_binary.keras')
+    MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.h5')
     MODEL_INPUT_SIZE = (224, 224)  # Standard size for medical imaging models
     MODEL_NORMALIZATION = 'none'  # Options: 'imagenet', '0-1', '-1-1', 'none'
     
@@ -21,7 +21,9 @@ class Config:
         'http://localhost:5173',  # Vite dev server
         'http://localhost:3000',  # Alternative React dev server
         'http://127.0.0.1:5173',
-        'http://127.0.0.1:3000'
+        'http://127.0.0.1:3000',
+        'https://*.vercel.app',  # Vercel deployments
+        'https://melanox-app.vercel.app',  # Production (update with your actual URL)
     ]
     
     # Image Processing Configuration
