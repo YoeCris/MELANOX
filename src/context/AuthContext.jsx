@@ -165,14 +165,31 @@ export const AuthProvider = ({ children }) => {
      */
     const logout = async () => {
         try {
-            const { error } = await supabase.auth.signOut()
-            if (error) throw error
+            // Intentar cerrar sesión en Supabase
+            const { error } = await supabase.auth.signOut({ scope: 'global' })
 
+            // Si hay error pero es porque no hay sesión, no es un error crítico
+            if (error && error.message !== 'Auth session missing!') {
+                console.warn('Error al cerrar sesión en Supabase:', error)
+            }
+
+            // Limpiar estado local SIEMPRE, incluso si hay error
             setUser(null)
+            setUserRole(null)
+
+            // Limpiar localStorage manualmente por si acaso
+            localStorage.removeItem('supabase.auth.token')
+
             return { success: true }
         } catch (error) {
             console.error('Error en logout:', error)
-            return { success: false, error: error.message }
+
+            // Aún así, limpiar el estado local
+            setUser(null)
+            setUserRole(null)
+            localStorage.removeItem('supabase.auth.token')
+
+            return { success: true } // Retornar success porque limpiamos el estado local
         }
     }
 
