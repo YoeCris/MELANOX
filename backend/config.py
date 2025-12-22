@@ -22,8 +22,8 @@ class Config:
         'http://localhost:3000',  # Alternative React dev server
         'http://127.0.0.1:5173',
         'http://127.0.0.1:3000',
-        'https://*.vercel.app',  # Vercel deployments
-        'https://melanox-app.vercel.app',  # Production (update with your actual URL)
+        'https://melanox-dev.vercel.app',  # Production Vercel
+        'https://*.vercel.app',  # All Vercel deployments
     ]
     
     # Image Processing Configuration
