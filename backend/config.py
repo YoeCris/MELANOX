@@ -16,7 +16,7 @@ class Config:
     API_PORT = 5000
     DEBUG = True
     
-    # CORS Configuration
+    # CORS Configuration - Updated for production
     CORS_ORIGINS = [
         'http://localhost:5173',  # Vite dev server
         'http://localhost:3000',  # Alternative React dev server
