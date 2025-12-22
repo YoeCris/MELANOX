@@ -7,7 +7,7 @@ class Config:
     """Application configuration"""
     
     # Model Configuration
-    MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.h5')
+    MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model_binary.keras')
     MODEL_INPUT_SIZE = (224, 224)  # Standard size for medical imaging models
     MODEL_NORMALIZATION = 'none'  # Options: 'imagenet', '0-1', '-1-1', 'none'
     
