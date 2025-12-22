@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 /**
  * Home - Página de inicio con información educativa sobre melanoma
  * 
@@ -125,9 +127,9 @@ const Home = () => {
           <div className="cta-card cyber-card">
             <h2>¿Tienes dudas sobre un lunar?</h2>
             <p>Usa nuestro sistema de análisis con IA para obtener una evaluación preliminar</p>
-            <a href="/analisis" className="cyber-button">
+            <Link to="/analisis" className="cyber-button">
               <span>Iniciar Análisis</span>
-            </a>
+            </Link>
           </div>
         </section>
       </div>
