@@ -1,0 +1,42 @@
+/* Analysis Selection Card */
+.selected-analysis-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: rgba(0, 217, 255, 0.05);
+    border: 1px solid var(--primary-blue);
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 217, 255, 0.1);
+}
+
+.analysis-info h4 {
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.analysis-info p {
+    color: var(--light-text);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.no-analyses-warning {
+    padding: 1rem;
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px dashed var(--warning-orange);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.no-analyses-warning p {
+    color: var(--warning-orange);
+    margin-bottom: 1rem;
+}
+
+.small-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}

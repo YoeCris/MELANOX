@@ -26,13 +26,10 @@ CORS(app, resources={
 })
 
 # Initialize model (singleton pattern)
-print("Initializing Melanoma Detection API...")
 try:
     model_loader = ModelLoader()
-    # image_processor = ImageProcessor()  # Commented out for now
-    print("✓ Model initialized successfully")
 except Exception as e:
-    print(f"✗ Error initializing: {str(e)}")
+    print(f"Error initializing model: {str(e)}")
     raise
 
 @app.route('/api/health', methods=['GET'])
@@ -115,21 +112,17 @@ def analyze_image():
                 'error': 'Image too large (max 10MB)'
             }), 400
         
-        print(f"Processing image: {image.size}, mode: {image.mode}")
-        
         # Run model prediction
-        print("Running model prediction...")
         prediction_result = model_loader.predict(image)
-        print(f"Prediction: {prediction_result['prediction']} ({prediction_result['confidence']}%)")
         
         # Determine if malignant
         is_malignant = prediction_result['prediction'] == 'Maligno'
+        confidence = prediction_result['confidence']
         
         # Determine lesion type based on prediction
         lesion_type = 'Melanoma' if is_malignant else 'Nevus Melanocítico'
         
         # Determine risk level based on confidence
-        confidence = prediction_result['confidence']
         if is_malignant:
             if confidence >= 85:
                 risk_level = 'Alto'
@@ -150,33 +143,65 @@ def analyze_image():
         else:
             recommendation = 'Consulta con un dermatólogo para evaluación profesional y monitoreo rutinario.'
         
-        # Build simplified response (only classification, no CV features yet)
+        # ---------------------------------------------------------
+        # GENERATE GRAD-CAM HEATMAP (Lesion Detection)
+        # ---------------------------------------------------------
+        processed_image_b64 = None
+        try:
+            # Import local module here to avoid circular imports or startup errors
+            import sys
+            import os
+            
+            # Ensure backend directory is in path
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            if current_dir not in sys.path:
+                sys.path.append(current_dir)
+                
+            from gradcam import make_gradcam_heatmap, save_and_display_gradcam, get_last_conv_layer_name
+            
+            # Get underlying model
+            model = model_loader.get_model()
+            
+            # Identify last conv layer
+            last_conv_layer_name = get_last_conv_layer_name(model)
+            
+            if last_conv_layer_name:
+                # Preprocess for Grad-CAM
+                img_array = model_loader.preprocess_image(image)
+                
+                # Generate heatmap
+                heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name)
+                
+                # Overlay on original image
+                processed_image_b64, _ = save_and_display_gradcam(image, heatmap, alpha=0.4)
+                
+        except Exception as e:
+            pass  # Silently fail Grad-CAM generation
+        # ---------------------------------------------------------
+        
+        # Build response
         response = {
             'success': True,
             'prediction': prediction_result['prediction'],
             'confidence': prediction_result['confidence'],
-            'confidence_level': prediction_result['confidence_level'],
-            'probabilities': prediction_result['probabilities'],
             'details': {
                 'type': lesion_type,
                 'risk': risk_level,
-                'recommendation': recommendation,
-                'characteristics': {
-                    'asymmetry': 'Análisis pendiente',
-                    'border': 'Análisis pendiente'
-                }
-            }
+                'recommendation': recommendation
+            },
+            'lesion_detected': True,
+            'processed_image': processed_image_b64 if processed_image_b64 else None,
+            'lesion_location': None,
+            'lesion_metrics': None,
+            'abcde_analysis': None
         }
         
-        print("Analysis completed successfully")
         return jsonify(response)
         
     except Exception as e:
-        print(f"Error during analysis: {str(e)}")
-        traceback.print_exc()
         return jsonify({
             'success': False,
-            'error': f'Analysis failed: {str(e)}'
+            'error': 'Analysis failed'
         }), 500
 
 @app.errorhandler(404)

@@ -35,6 +35,7 @@ const Analysis = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [isScanning, setIsScanning] = useState(false)
   const [result, setResult] = useState(null)
+  const [showHeatmap, setShowHeatmap] = useState(true)
 
   // Auth and analysis context
   const { user } = useAuth()
@@ -167,14 +168,27 @@ const Analysis = () => {
               <div className="grid-item processed-image-card cyber-card">
                 <h3 className="section-title">
                   <span className="icon">🔬</span>
-                  {result.processedImage ? 'Imagen Procesada' : 'Imagen Analizada'}
+                  {showHeatmap && result.processedImage ? 'Detección de Lesión (IA)' : 'Imagen Original'}
                 </h3>
                 <div className="image-preview">
                   <img
-                    src={result.processedImage || selectedImage}
-                    alt={result.processedImage ? "Imagen con bordes detectados" : "Imagen analizada"}
+                    src={showHeatmap && result.processedImage ? result.processedImage : selectedImage}
+                    alt={showHeatmap && result.processedImage ? "Mapa de calor de lesión" : "Imagen original"}
                   />
                 </div>
+
+                {result.processedImage && (
+                  <div className="heatmap-toggle-container" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+                    <button
+                      className={`cyber-button ${showHeatmap ? 'primary' : 'outline'}`}
+                      onClick={() => setShowHeatmap(!showHeatmap)}
+                      style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}
+                    >
+                      {showHeatmap ? 'Ocultar Detección' : 'Mostrar Detección'}
+                    </button>
+                  </div>
+                )}
+
                 {result.lesionDetected && result.lesionMetrics && (
                   <div className="lesion-info">
                     <p><strong>Diámetro:</strong> {result.lesionMetrics.diameter_mm}mm</p>
@@ -243,20 +257,6 @@ const Analysis = () => {
                         {result.details.risk}
                       </div>
                     </div>
-
-                    {result.details.characteristics && (
-                      <>
-                        <div className="detail-card">
-                          <div className="detail-label">Asimetría</div>
-                          <div className="detail-value">{result.details.characteristics.asymmetry}</div>
-                        </div>
-
-                        <div className="detail-card">
-                          <div className="detail-label">Bordes</div>
-                          <div className="detail-value">{result.details.characteristics.border}</div>
-                        </div>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>

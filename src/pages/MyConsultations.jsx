@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getUserConsultations } from '../services/consultationService'
+import { getUserConsultations, rateConsultation } from '../services/consultationService'
 import { Loader, FileText, AlertTriangle, Clock, CheckCircle, XCircle } from 'lucide-react'
+import StarRating from '../components/StarRating'
 
 /**
  * MyConsultations - Página que muestra las consultas del usuario
@@ -143,6 +144,28 @@ function MyConsultations() {
                                         </div>
                                     )}
 
+                                    {console.log('[MyConsultations] Consultation:', consultation.id, 'actual_diagnosis:', consultation.actual_diagnosis, 'actual_lesion_type:', consultation.actual_lesion_type)}
+
+                                    {consultation.status === 'completed' && (consultation.actual_diagnosis || consultation.actual_lesion_type) && (
+                                        <div className="doctor-validation">
+                                            <h4>Resultado del Diagnóstico Médico:</h4>
+                                            {consultation.actual_diagnosis && (
+                                                <div className="validation-result">
+                                                    <span className="label">Diagnóstico Real:</span>
+                                                    <span className={`diagnosis-badge ${consultation.actual_diagnosis.toLowerCase()}`}>
+                                                        {consultation.actual_diagnosis}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {consultation.actual_lesion_type && (
+                                                <div className="validation-result">
+                                                    <span className="label">Tipo de Lesión:</span>
+                                                    <span className="lesion-type">{consultation.actual_lesion_type}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {consultation.status === 'completed' && consultation.doctor_diagnosis && (
                                         <div className="doctor-response">
                                             <h4>Diagnóstico del Doctor:</h4>
@@ -158,6 +181,38 @@ function MyConsultations() {
                                             <p className="response-date">
                                                 Respondido el {new Date(consultation.doctor_response_date).toLocaleDateString('es-ES')}
                                             </p>
+                                        </div>
+                                    )}
+
+                                    {consultation.status === 'completed' && (
+                                        <div className="consultation-rating">
+                                            {consultation.rating ? (
+                                                <>
+                                                    <h4>Tu Calificación:</h4>
+                                                    <div className="rating-display">
+                                                        <StarRating value={consultation.rating} readonly size="medium" />
+                                                        <span>({consultation.rating}/5)</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <h4>Califica la Atención Recibida:</h4>
+                                                    <p>Tu opinión nos ayuda a mejorar el servicio</p>
+                                                    <StarRating
+                                                        value={0}
+                                                        onChange={async (rating) => {
+                                                            try {
+                                                                await rateConsultation(consultation.id, rating)
+                                                                fetchConsultations() // Recargar para mostrar el rating
+                                                            } catch (error) {
+                                                                console.error('Error rating consultation:', error)
+                                                                alert('Error al guardar calificación')
+                                                            }
+                                                        }}
+                                                        size="large"
+                                                    />
+                                                </>
+                                            )}
                                         </div>
                                     )}
                                 </div>

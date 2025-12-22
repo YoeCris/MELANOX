@@ -1,70 +1,36 @@
-# ================================
-# MELANOX - Los Quackers
-# ================================
-
-# ============ DEPENDENCIAS ============
+# Dependencies
 node_modules/
+backend/venv/
+backend/__pycache__/
+*.pyc
 
-# ============ BUILD ============
+# Build outputs
 dist/
-dist-ssr/
 build/
-*.local
 
-# ============ LOGS ============
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Environment variables
+.env
+.env.local
+.env.production
 
-# ============ EDITORES/IDEs ============
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+# IDE
+.vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# ============ VARIABLES DE ENTORNO ============
-.env
-.env.local
-.env.*.local
-.env.production
-.env.development
-.env.example
-
-# ============ ARCHIVOS SENSIBLES ============
-# Configuración con credenciales
-src/config/firebase.js
-src/config/supabase.js
-
-# Documentación con información sensible
-*_SETUP.md
-FIREBASE_SETUP.md
-SUPABASE_SETUP.md
-
-# ============ CACHE & TEMP ============
-.cache/
-.temp/
-tmp/
-*.tmp
-
-# ============ SISTEMA OPERATIVO ============
 Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
 
-# ============ OTROS ============
-*.bak
-*.backup
-.vercel
+# Logs
+*.log
+npm-debug.log*
+
+# Training data (not needed for deployment)
+entrenarmodel/
+dataset_binary/
+
+# Temporary files
+*.tmp
+.cache/

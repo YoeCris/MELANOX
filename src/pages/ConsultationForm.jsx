@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { createConsultation } from '../services/consultationService'
-import { User, Phone, Mail, MapPin, FileText, AlertCircle, Send } from 'lucide-react'
+import { createConsultation, getLastConsultation } from '../services/consultationService'
+import { getUserAnalyses } from '../services/analysisService'
+import { User, Phone, Mail, MapPin, FileText, AlertCircle, Send, Stethoscope, Image as ImageIcon } from 'lucide-react'
 
 /**
  * ConsultationForm - Formulario para crear una nueva consulta médica
@@ -13,10 +14,15 @@ function ConsultationForm() {
     const navigate = useNavigate()
     const { user } = useAuth()
 
-    const { doctor, analysis } = location.state || {}
+    const { doctor, analysis: preSelectedAnalysis } = location.state || {}
+
+    // State for analyses selection
+    const [userAnalyses, setUserAnalyses] = useState([])
+    const [selectedAnalysisId, setSelectedAnalysisId] = useState(preSelectedAnalysis?.id || '')
+    const [loadingAnalyses, setLoadingAnalyses] = useState(false)
 
     const [formData, setFormData] = useState({
-        patient_full_name: '',
+        patient_full_name: user?.user_metadata?.full_name || '',
         patient_age: '',
         patient_gender: '',
         patient_phone: '',
@@ -30,6 +36,69 @@ function ConsultationForm() {
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [dataLoaded, setDataLoaded] = useState(false)
+
+    // Load user analyses and previous consultation data
+    useEffect(() => {
+        if (user) {
+            if (!preSelectedAnalysis) {
+                fetchUserAnalyses()
+            }
+
+            // Only fetch previous data if we haven't loaded it yet
+            if (!dataLoaded) {
+                fetchPreviousData()
+            }
+        }
+    }, [user, preSelectedAnalysis, dataLoaded])
+
+    // Debugging: Verificar Doctor ID
+    useEffect(() => {
+        if (doctor) {
+            console.log('[ConsultationForm] Selected Doctor:', doctor)
+            console.log('[ConsultationForm] Target Doctor ID:', doctor.id)
+        }
+    }, [doctor])
+
+    const fetchPreviousData = async () => {
+        try {
+            const lastConsultation = await getLastConsultation(user.id)
+            if (lastConsultation) {
+                console.log('Autocompleting data from previous consultation:', lastConsultation)
+                setFormData(prev => ({
+                    ...prev,
+                    patient_full_name: lastConsultation.patient_full_name || prev.patient_full_name,
+                    patient_age: lastConsultation.patient_age || prev.patient_age,
+                    patient_gender: lastConsultation.patient_gender || prev.patient_gender,
+                    patient_phone: lastConsultation.patient_phone || prev.patient_phone,
+                    patient_address: lastConsultation.patient_address || prev.patient_address,
+                    // Optional medical fields
+                    medical_history: lastConsultation.medical_history || '',
+                    current_medications: lastConsultation.current_medications || '',
+                    allergies: lastConsultation.allergies || '',
+                }))
+            }
+            setDataLoaded(true)
+        } catch (err) {
+            console.error('Error fetching previous data:', err)
+        }
+    }
+
+    const fetchUserAnalyses = async () => {
+        try {
+            setLoadingAnalyses(true)
+            const analyses = await getUserAnalyses(user.id)
+            setUserAnalyses(analyses)
+            // Pre-select the most recent one if available
+            if (analyses.length > 0) {
+                setSelectedAnalysisId(analyses[0].id)
+            }
+        } catch (err) {
+            console.error('Error fetching analyses:', err)
+        } finally {
+            setLoadingAnalyses(false)
+        }
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -42,8 +111,13 @@ function ConsultationForm() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (!doctor || !analysis) {
-            setError('Información de doctor o análisis no disponible')
+        if (!doctor) {
+            setError('Información de doctor no disponible')
+            return
+        }
+
+        if (!selectedAnalysisId) {
+            setError('Por favor seleccione un análisis para la consulta')
             return
         }
 
@@ -51,10 +125,12 @@ function ConsultationForm() {
             setLoading(true)
             setError(null)
 
+            console.log('[ConsultationForm] Submitting consultation for Doctor ID:', doctor.id)
+
             const consultationData = {
                 ...formData,
                 patient_age: parseInt(formData.patient_age),
-                analysis_id: analysis.id,
+                analysis_id: selectedAnalysisId,
                 user_id: user.id,
                 doctor_id: doctor.id
             }
@@ -73,13 +149,14 @@ function ConsultationForm() {
         }
     }
 
-    if (!doctor || !analysis) {
+    // If no doctor is selected, redirect
+    if (!doctor) {
         return (
             <div className="page-container">
                 <div className="error-section">
                     <AlertCircle size={48} />
                     <h2>Información Incompleta</h2>
-                    <p>No se encontró información del doctor o análisis</p>
+                    <p>No se seleccionó ningún doctor para la consulta</p>
                     <button className="cyber-button" onClick={() => navigate('/consultar-doctor')}>
                         Volver a Doctores
                     </button>
@@ -100,6 +177,59 @@ function ConsultationForm() {
 
                 <div className="form-container cyber-card">
                     <form onSubmit={handleSubmit} className="consultation-form">
+
+                        {/* Analysis Selection Section */}
+                        <div className="form-section">
+                            <h3 className="form-section-title">
+                                <ImageIcon size={24} />
+                                Selección de Análisis
+                            </h3>
+
+                            {preSelectedAnalysis ? (
+                                <div className="selected-analysis-card">
+                                    <div className="analysis-info">
+                                        <h4>Análisis Pre-seleccionado</h4>
+                                        <p>Predicción: {preSelectedAnalysis.prediction}</p>
+                                        <p>Confianza: {preSelectedAnalysis.confidence}%</p>
+                                    </div>
+                                    <input type="hidden" name="analysis_id" value={preSelectedAnalysis.id} />
+                                </div>
+                            ) : (
+                                <div className="form-group">
+                                    <label htmlFor="analysis_select">Seleccionar Análisis *</label>
+                                    {loadingAnalyses ? (
+                                        <div className="loading-text">Cargando sus análisis...</div>
+                                    ) : userAnalyses.length > 0 ? (
+                                        <select
+                                            id="analysis_select"
+                                            value={selectedAnalysisId}
+                                            onChange={(e) => setSelectedAnalysisId(e.target.value)}
+                                            className="cyber-input"
+                                            required
+                                        >
+                                            <option value="">-- Seleccione un análisis --</option>
+                                            {userAnalyses.map(a => (
+                                                <option key={a.id} value={a.id}>
+                                                    {new Date(a.created_at).toLocaleDateString()} - {a.prediction} ({a.confidence}%)
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <div className="no-analyses-warning">
+                                            <p>No tienes análisis registrados. Debes realizar un análisis antes de consultar.</p>
+                                            <button
+                                                type="button"
+                                                className="cyber-button secondary small"
+                                                onClick={() => navigate('/analisis')}
+                                            >
+                                                Ir a realizar análisis
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         <h3 className="form-section-title">
                             <User size={24} />
                             Información Personal
@@ -186,7 +316,7 @@ function ConsultationForm() {
                             <div className="form-group full-width">
                                 <label htmlFor="patient_address">
                                     <MapPin size={18} />
-                                    Dirección
+                                    Dirección (Opcional)
                                 </label>
                                 <input
                                     type="text"
@@ -206,7 +336,7 @@ function ConsultationForm() {
 
                         <div className="form-group">
                             <label htmlFor="medical_history">
-                                Historial Médico
+                                Historial Médico (Opcional)
                                 <span className="label-hint">(Enfermedades previas, cirugías, etc.)</span>
                             </label>
                             <textarea
@@ -222,7 +352,7 @@ function ConsultationForm() {
 
                         <div className="form-group">
                             <label htmlFor="current_medications">
-                                Medicamentos Actuales
+                                Medicamentos Actuales (Opcional)
                                 <span className="label-hint">(Medicamentos que está tomando actualmente)</span>
                             </label>
                             <textarea
@@ -238,7 +368,7 @@ function ConsultationForm() {
 
                         <div className="form-group">
                             <label htmlFor="allergies">
-                                Alergias
+                                Alergias (Opcional)
                                 <span className="label-hint">(Alergias conocidas a medicamentos, alimentos, etc.)</span>
                             </label>
                             <textarea
@@ -254,7 +384,7 @@ function ConsultationForm() {
 
                         <div className="form-group">
                             <label htmlFor="additional_notes">
-                                Notas Adicionales
+                                Notas Adicionales (Opcional)
                                 <span className="label-hint">(Información adicional que considere relevante)</span>
                             </label>
                             <textarea
@@ -287,10 +417,13 @@ function ConsultationForm() {
                             <button
                                 type="submit"
                                 className="cyber-button primary"
-                                disabled={loading}
+                                disabled={loading || (!selectedAnalysisId && !preSelectedAnalysis)}
                             >
                                 {loading ? (
-                                    <>Enviando...</>
+                                    <>
+                                        <Send size={20} />
+                                        Enviar Consulta
+                                    </>
                                 ) : (
                                     <>
                                         <Send size={20} />

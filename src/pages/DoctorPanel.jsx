@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getDoctorConsultations, updateConsultationStatus, provideDoctorResponse } from '../services/consultationService'
+import { getDoctorConsultations, provideDoctorResponse } from '../services/consultationService'
 import { supabase } from '../config/supabase'
-import { Loader, FileText, AlertTriangle, Clock, Eye } from 'lucide-react'
+import { Loader, FileText, Clock, CheckCircle, User, Phone, Mail, MapPin, Activity, AlertTriangle, Eye } from 'lucide-react'
 
 /**
  * DoctorPanel - Panel de casos para doctores
  * Muestra consultas asignadas y permite responder
  */
 function DoctorPanel() {
-    const { user } = useAuth()
+    const { user, userRole } = useAuth()
     const [consultations, setConsultations] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -17,10 +17,13 @@ function DoctorPanel() {
     const [doctorId, setDoctorId] = useState(null)
 
     useEffect(() => {
-        if (user) {
+        if (user && userRole === 'doctor') {
             fetchDoctorId()
+        } else if (user && userRole && userRole !== 'doctor') {
+            setLoading(false)
+            setError('Este usuario no tiene permisos de doctor.')
         }
-    }, [user])
+    }, [user, userRole])
 
     useEffect(() => {
         if (doctorId) {
@@ -30,28 +33,72 @@ function DoctorPanel() {
 
     const fetchDoctorId = async () => {
         try {
-            const { data, error } = await supabase
-                .from('doctors')
-                .select('id')
-                .eq('user_id', user.id)
-                .single()
+            console.log('[DoctorPanel] Checking doctor profile for user:', user?.id)
 
-            if (error) throw error
-            setDoctorId(data.id)
+            // 1. Intentar buscar por user_id
+            let { data, error } = await supabase
+                .from('doctors')
+                .select('id, full_name, user_id')
+                .eq('user_id', user.id)
+                .maybeSingle()
+
+            // 2. Si no se encuentra, intentar buscar por email (Fallback robusto)
+            if (!data) {
+                console.log('[DoctorPanel] Not found by ID, trying by email:', user.email)
+                const { data: dataEmail, error: errorEmail } = await supabase
+                    .from('doctors')
+                    .select('id, full_name, user_id')
+                    .eq('email', user.email)
+                    .maybeSingle()
+
+                if (dataEmail) {
+                    data = dataEmail
+                    // Si encontramos el doctor por email pero no tiene el user_id vinculado correctamente
+                    if (dataEmail.user_id !== user.id) {
+                        console.warn('[DoctorPanel] Doctor linked by email but ID mismatch. Updating link...')
+                        const { error: updateError } = await supabase
+                            .from('doctors')
+                            .update({ user_id: user.id })
+                            .eq('id', dataEmail.id)
+
+                        if (updateError) {
+                            console.error('[DoctorPanel] FAILED to update doctor link. RLS might be blocking this:', updateError)
+                        } else {
+                            console.log('[DoctorPanel] Doctor link updated successfully. User is now owner.')
+                        }
+                    }
+                } else if (errorEmail) {
+                    console.error('[DoctorPanel] Error fetching by email:', errorEmail)
+                }
+            }
+
+            if (error && !data) throw error
+
+            if (data) {
+                console.log('[DoctorPanel] Doctor identified:', data)
+                setDoctorId(data.id)
+            } else {
+                console.warn('[DoctorPanel] No doctor profile found for this user.')
+                setError('No se encontro perfil de doctor asociado a esta cuenta.')
+            }
         } catch (err) {
-            console.error('Error fetching doctor ID:', err)
-            setError('No se encontró perfil de doctor')
+            console.error('[DoctorPanel] Error fetching doctor ID:', err)
+            setError('Error al verificar perfil de doctor')
         }
     }
 
     const fetchConsultations = async () => {
+        if (!doctorId) return
+
         try {
             setLoading(true)
+            console.log('[DoctorPanel] Fetching consultations for doctorId:', doctorId)
             const data = await getDoctorConsultations(doctorId)
+            console.log('[DoctorPanel] Consultations loaded:', data)
             setConsultations(data)
             setError(null)
         } catch (err) {
-            console.error('Error fetching consultations:', err)
+            console.error('[DoctorPanel] Error fetching consultations:', err)
             setError(err.message)
         } finally {
             setLoading(false)
@@ -166,8 +213,7 @@ function DoctorPanel() {
                                         className="cyber-button"
                                         onClick={() => handleViewCase(consultation)}
                                     >
-                                        <Eye size={18} />
-                                        Ver Caso Completo
+                                        <Eye size={20} /> Ver Caso Completo
                                     </button>
                                 </div>
                             </div>
@@ -184,11 +230,18 @@ function DoctorPanel() {
  */
 function CaseDetail({ consultation, onBack, onUpdate }) {
     const [response, setResponse] = useState({
-        diagnosis: consultation.doctor_diagnosis || '',
-        recommendations: consultation.doctor_recommendations || '',
-        notes: consultation.doctor_notes || ''
+        actual_diagnosis: consultation.actual_diagnosis || '',
+        actual_lesion_type: consultation.actual_lesion_type || ''
     })
     const [submitting, setSubmitting] = useState(false)
+
+    // Update form ONLY when viewing a different consultation
+    useEffect(() => {
+        setResponse({
+            actual_diagnosis: consultation.actual_diagnosis || '',
+            actual_lesion_type: consultation.actual_lesion_type || ''
+        })
+    }, [consultation.id]) // Solo cuando cambia el ID de la consulta
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -260,68 +313,87 @@ function CaseDetail({ consultation, onBack, onUpdate }) {
                             )}
                         </div>
 
-                        {/* Análisis IA */}
-                        {consultation.analyses && (
+
+                        {/* Imagen del Análisis */}
+                        {console.log('[CaseDetail] Consultation data:', consultation)}
+                        {console.log('[CaseDetail] Analyses:', consultation.analyses)}
+                        {console.log('[CaseDetail] Image URL:', consultation.analyses?.image_url)}
+
+                        {consultation.analyses?.image_url ? (
                             <div className="cyber-card">
-                                <h3>Análisis de IA</h3>
-                                <div className="analysis-info">
-                                    <div className="analysis-result">
-                                        <span className={`prediction ${consultation.analyses.prediction.toLowerCase()}`}>
-                                            {consultation.analyses.prediction}
-                                        </span>
-                                        <span className="confidence">{consultation.analyses.confidence}% confianza</span>
-                                    </div>
-                                    {consultation.analyses.image_url && (
-                                        <img
-                                            src={consultation.analyses.image_url}
-                                            alt="Imagen del análisis"
-                                            className="analysis-image"
-                                        />
-                                    )}
+                                <h3>Imagen del Lunar Analizado</h3>
+                                <div className="analysis-image-container">
+                                    <img
+                                        src={consultation.analyses.image_url}
+                                        alt="Imagen del lunar"
+                                        className="analysis-image clickable"
+                                        onClick={() => window.open(consultation.analyses.image_url, '_blank')}
+                                        title="Click para ampliar"
+                                    />
+                                    <p className="image-hint">Click en la imagen para ampliar</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="cyber-card">
+                                <h3>⚠️ Imagen No Disponible</h3>
+                                <div className="no-image-message">
+                                    <p><strong>La imagen del análisis no está disponible.</strong></p>
+                                    <p className="hint-text">
+                                        Esta consulta no tiene un análisis válido asociado.
+                                        Por favor, solicite al paciente que proporcione la imagen del lunar
+                                        o cree una nueva consulta desde la página de análisis.
+                                    </p>
+                                    <p className="hint-text" style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
+                                        <strong>Nota:</strong> Para futuras consultas, el paciente debe primero realizar
+                                        un análisis en la página de "Análisis" y luego crear la consulta seleccionando ese análisis.
+                                    </p>
                                 </div>
                             </div>
                         )}
 
-                        {/* Formulario de Respuesta */}
+
+                        {/* Formulario de Validación del Modelo */}
                         <div className="cyber-card full-width">
-                            <h3>Respuesta Médica</h3>
+                            <h3>Validación del Modelo IA</h3>
+                            <p className="validation-description">
+                                Complete estos campos con el diagnóstico real para mejorar el modelo de IA.
+                            </p>
                             <form onSubmit={handleSubmit} className="doctor-response-form">
                                 <div className="form-group">
-                                    <label htmlFor="diagnosis">Diagnóstico *</label>
-                                    <textarea
-                                        id="diagnosis"
-                                        value={response.diagnosis}
-                                        onChange={(e) => setResponse({ ...response, diagnosis: e.target.value })}
+                                    <label htmlFor="actual_diagnosis">Diagnóstico Real *</label>
+                                    <select
+                                        id="actual_diagnosis"
+                                        value={response.actual_diagnosis || ''}
+                                        onChange={(e) => setResponse({ ...response, actual_diagnosis: e.target.value })}
                                         required
-                                        rows="5"
                                         className="cyber-input"
-                                        placeholder="Proporcione su diagnóstico profesional..."
-                                    />
+                                    >
+                                        <option value="">-- Seleccione --</option>
+                                        <option value="Benigno">Benigno</option>
+                                        <option value="Maligno">Maligno</option>
+                                    </select>
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="recommendations">Recomendaciones *</label>
-                                    <textarea
-                                        id="recommendations"
-                                        value={response.recommendations}
-                                        onChange={(e) => setResponse({ ...response, recommendations: e.target.value })}
+                                    <label htmlFor="actual_lesion_type">Tipo de Lesión Real *</label>
+                                    <select
+                                        id="actual_lesion_type"
+                                        value={response.actual_lesion_type || ''}
+                                        onChange={(e) => setResponse({ ...response, actual_lesion_type: e.target.value })}
                                         required
-                                        rows="5"
                                         className="cyber-input"
-                                        placeholder="Proporcione recomendaciones y tratamiento..."
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="notes">Notas Privadas</label>
-                                    <textarea
-                                        id="notes"
-                                        value={response.notes}
-                                        onChange={(e) => setResponse({ ...response, notes: e.target.value })}
-                                        rows="3"
-                                        className="cyber-input"
-                                        placeholder="Notas privadas (no visibles para el paciente)..."
-                                    />
+                                    >
+                                        <option value="">-- Seleccione --</option>
+                                        <option value="Queratosis Actínica">Queratosis Actínica (Actinic Keratosis)</option>
+                                        <option value="Carcinoma Basocelular">Carcinoma Basocelular (Basal Cell Carcinoma)</option>
+                                        <option value="Dermatofibroma">Dermatofibroma</option>
+                                        <option value="Melanoma">Melanoma</option>
+                                        <option value="Nevus">Nevus</option>
+                                        <option value="Queratosis Benigna Pigmentada">Queratosis Benigna Pigmentada (Pigmented Benign Keratosis)</option>
+                                        <option value="Queratosis Seborreica">Queratosis Seborreica (Seborrheic Keratosis)</option>
+                                        <option value="Carcinoma de Células Escamosas">Carcinoma de Células Escamosas (Squamous Cell Carcinoma)</option>
+                                        <option value="Lesión Vascular">Lesión Vascular (Vascular Lesion)</option>
+                                    </select>
                                 </div>
 
                                 <button
@@ -329,7 +401,7 @@ function CaseDetail({ consultation, onBack, onUpdate }) {
                                     className="cyber-button primary"
                                     disabled={submitting}
                                 >
-                                    {submitting ? 'Enviando...' : 'Enviar Respuesta'}
+                                    {submitting ? 'Guardando...' : 'Guardar Validación'}
                                 </button>
                             </form>
                         </div>

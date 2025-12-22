@@ -137,6 +137,38 @@ export async function deleteDoctor(doctorId) {
 }
 
 /**
+ * Obtener rating promedio de un doctor
+ * @param {string} doctorId - ID del doctor
+ * @returns {Promise<Object>} { average: number, count: number }
+ */
+export async function getDoctorRating(doctorId) {
+    try {
+        const { data, error } = await supabase
+            .from('consultations')
+            .select('rating')
+            .eq('doctor_id', doctorId)
+            .not('rating', 'is', null)
+
+        if (error) throw error
+
+        if (!data || data.length === 0) {
+            return { average: 0, count: 0 }
+        }
+
+        const sum = data.reduce((acc, curr) => acc + curr.rating, 0)
+        const average = sum / data.length
+
+        return {
+            average: Math.round(average * 10) / 10, // Redondear a 1 decimal
+            count: data.length
+        }
+    } catch (error) {
+        console.error('Error getting doctor rating:', error)
+        return { average: 0, count: 0 }
+    }
+}
+
+/**
  * Activar/Desactivar un doctor (admin only)
  * @param {string} doctorId - ID del doctor
  * @param {boolean} isActive - Estado activo

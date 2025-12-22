@@ -192,18 +192,15 @@ function AdminDashboard() {
                 {/* Header */}
                 <section className="analysis-header">
                     <h1 className="page-title">
-                        <Shield size={36} />
+                        <Shield size={40} />
                         Panel de Administración
                     </h1>
-                    <p className="page-subtitle">
-                        Vista completa de todos los análisis del sistema
-                    </p>
                 </section>
 
                 {/* Stats Cards */}
                 <div className="stats-grid">
                     <div className="stat-card cyber-card">
-                        <div className="stat-icon">📊</div>
+                        <div className="stat-icon"></div>
                         <div className="stat-content">
                             <div className="stat-value">{stats.total}</div>
                             <div className="stat-label">Total Análisis</div>

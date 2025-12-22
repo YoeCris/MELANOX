@@ -92,13 +92,13 @@ function DoctorForm() {
             const filePath = `doctors/${fileName}`
 
             const { error: uploadError } = await supabase.storage
-                .from('melanox-images')
+                .from('analysis-images')
                 .upload(filePath, imageFile)
 
             if (uploadError) throw uploadError
 
             const { data: { publicUrl } } = supabase.storage
-                .from('melanox-images')
+                .from('analysis-images')
                 .getPublicUrl(filePath)
 
             return publicUrl

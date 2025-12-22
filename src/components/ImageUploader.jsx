@@ -74,8 +74,8 @@ function ImageUploader({ onImageSelect, selectedImage, isScanning }) {
         >
           <div className="upload-content">
             <div className="upload-icon"><Upload size={48} /></div>
-            <p className="upload-text">Arrastra una imagen aquí</p>
-            <p className="upload-subtext">o haz clic para seleccionar</p>
+            <p className="upload-text">Arrastra una imagen aquí o haz clic para seleccionar</p>
+            <p className="upload-subtext">La imagen debe de ser clara para mejor precisión.</p>
             <p className="upload-formats">PNG, JPG, JPEG</p>
           </div>
           <div className="upload-corners">

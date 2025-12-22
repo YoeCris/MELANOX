@@ -28,14 +28,10 @@ class ModelLoader:
     def load_model(self):
         """Load the Keras model from disk"""
         try:
-            print(f"Loading model from: {Config.MODEL_PATH}")
             if not os.path.exists(Config.MODEL_PATH):
                 raise FileNotFoundError(f"Model file not found at {Config.MODEL_PATH}")
             
             self._model = keras.models.load_model(Config.MODEL_PATH)
-            print(f"Model loaded successfully!")
-            print(f"Model input shape: {self._model.input_shape}")
-            print(f"Model output shape: {self._model.output_shape}")
             
         except Exception as e:
             print(f"Error loading model: {str(e)}")
@@ -120,11 +116,8 @@ class ModelLoader:
             print(f"Benign prob: {benign_prob:.4f}, Malignant prob: {malignant_prob:.4f}")
         
         # Determine prediction class using 0.5 threshold for sigmoid
-        # If malignant_prob > 0.5, it's malignant
         is_malignant = malignant_prob > 0.5
         confidence = max(benign_prob, malignant_prob)
-        
-        print(f"Final classification: {'Maligno' if is_malignant else 'Benigno'} (confidence: {confidence:.4f})")
         
         return {
             'prediction': 'Maligno' if is_malignant else 'Benigno',
@@ -147,3 +140,7 @@ class ModelLoader:
             'total_params': self._model.count_params(),
             'model_path': Config.MODEL_PATH
         }
+
+    def get_model(self):
+        """Return the underlying Keras model instance"""
+        return self._model

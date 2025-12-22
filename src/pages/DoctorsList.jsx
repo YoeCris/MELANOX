@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getActiveDoctors } from '../services/doctorService'
+import { getDoctorRating } from '../services/doctorService'
 import DoctorCard from '../components/DoctorCard'
+import StarRating from '../components/StarRating'
 import { Loader, Stethoscope, AlertTriangle } from 'lucide-react'
 
 /**
@@ -11,6 +13,7 @@ import { Loader, Stethoscope, AlertTriangle } from 'lucide-react'
 function DoctorsList() {
     const navigate = useNavigate()
     const [doctors, setDoctors] = useState([])
+    const [ratings, setRatings] = useState({}) // { doctorId: { average, count } }
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
@@ -22,7 +25,17 @@ function DoctorsList() {
         try {
             setLoading(true)
             const data = await getActiveDoctors()
+            console.log('[DoctorsList] Fetched doctors:', data)
             setDoctors(data)
+
+            // Fetch ratings for each doctor
+            const ratingsData = {}
+            for (const doctor of data) {
+                const rating = await getDoctorRating(doctor.id)
+                ratingsData[doctor.id] = rating
+            }
+            setRatings(ratingsData)
+
             setError(null)
         } catch (err) {
             console.error('Error fetching doctors:', err)
@@ -66,11 +79,11 @@ function DoctorsList() {
     return (
         <div className="doctors-list-page">
             <div className="container">
-                <section className="page-header">
+                <section className="page-title">
                     <div className="header-icon">
-                        <Stethoscope size={48} />
+                        <Stethoscope size={40} />
+                        Consultar con un Doctor
                     </div>
-                    <h1 className="page-title">Consultar con un Doctor</h1>
                     <p className="page-subtitle">
                         Selecciona un dermatólogo especializado para obtener una consulta profesional
                     </p>
@@ -88,6 +101,7 @@ function DoctorsList() {
                             <DoctorCard
                                 key={doctor.id}
                                 doctor={doctor}
+                                rating={ratings[doctor.id]}
                                 onSelect={handleSelectDoctor}
                             />
                         ))}

@@ -1,3 +1,9 @@
+/* =========@import './pages/ConsultationForm.css';
+
+/* ===================================
+   MELANOX - Sistema de Detección de Melanoma
+   Estilos Globales con Tema Cyber
+   =================================== */
 /* ============================================
    MELANOX - TABLA DE CONTENIDOS
    ============================================
@@ -3536,20 +3542,200 @@ textarea.cyber-input {
 .analysis-info {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .analysis-result {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.analysis-details {
+  background: rgba(0, 217, 255, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-teal);
+}
+
+.analysis-details p {
+  margin: 0.5rem 0;
+  color: var(--light-text);
+  line-height: 1.6;
+}
+
+.analysis-details strong {
+  color: var(--primary-blue);
+  margin-right: 0.5rem;
+}
+
+.analysis-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .analysis-image {
   width: 100%;
-  max-width: 300px;
+  max-width: 500px;
+  border-radius: 12px;
+  border: 2px solid var(--primary-blue);
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.analysis-image.clickable {
+  cursor: pointer;
+}
+
+.analysis-image.clickable:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 217, 255, 0.5);
+  border-color: var(--accent-teal);
+}
+
+.image-hint {
+  color: var(--accent-teal);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.no-image-message {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 152, 0, 0.1);
   border-radius: 8px;
-  border: 2px solid var(--border-color);
+  border: 2px dashed var(--warning-orange);
+}
+
+.no-image-message p {
+  margin: 0.5rem 0;
+  color: var(--dark-text);
+  font-size: 1rem;
+}
+
+.no-image-message .hint-text {
+  font-size: 0.9rem;
+  color: var(--light-text);
+  font-style: italic;
+}
+
+.case-detail-page {
+  padding: 2rem 0;
+  min-height: 100vh;
+}
+
+.case-detail-page .container {
+  max-width: 1200px;
+}
+
+.case-detail-container {
+  margin-top: 2rem;
+}
+
+.case-detail-container h3 {
+  color: var(--primary-blue);
+  margin: 0 0 1.5rem 0;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.case-detail-container h3::before {
+  content: '';
+  width: 4px;
+  height: 1.5rem;
+  background: linear-gradient(180deg, var(--primary-blue), var(--accent-teal));
+  border-radius: 2px;
+}
+
+.case-detail-container .cyber-card {
+  padding: 1.5rem;
+}
+
+/* Model Validation Section */
+.model-validation-section,
+.patient-response-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.model-validation-section:last-child,
+.patient-response-section:last-child {
+  border-bottom: none;
+}
+
+.model-validation-section h4,
+.patient-response-section h4 {
+  color: var(--accent-teal);
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.validation-hint {
+  background: rgba(0, 217, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-blue);
+  margin-bottom: 1.5rem;
+  color: var(--dark-text);
+  line-height: 1.6;
+}
+
+.validation-hint strong {
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.doctor-response-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.doctor-response-form label {
+  display: block;
+  color: var(--dark-text);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.doctor-response-form .cyber-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(0, 217, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--dark-text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.doctor-response-form .cyber-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: rgba(0, 217, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.2);
+}
+
+.doctor-response-form select.cyber-input option {
+  background: var(--card-bg);
+  color: var(--dark-text);
+  padding: 0.5rem;
+}
+
+.doctor-response-form select.cyber-input option:hover,
+.doctor-response-form select.cyber-input option:checked {
+  background: var(--primary-blue);
+  color: var(--darker-bg);
 }
 
 /* Admin Doctors */
@@ -3752,6 +3938,7 @@ textarea.cyber-input {
     overflow-x: scroll;
   }
 }
+
 /* Doctor Modal Compact Layout */
 .doctor-modal {
   max-width: 700px !important;
@@ -3840,7 +4027,7 @@ textarea.cyber-input {
   .form-grid-2col {
     grid-template-columns: 1fr;
   }
-  
+
   .doctor-modal {
     max-width: 95vw;
   }
@@ -3881,13 +4068,25 @@ textarea.cyber-input {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Improved Modal Design */
@@ -3974,6 +4173,7 @@ textarea.cyber-input {
     grid-template-columns: 1fr;
   }
 }
+
 /* Global Loading Animation - Cyber Style with Gear */
 .loading-overlay {
   position: fixed;
@@ -4013,13 +4213,25 @@ textarea.cyber-input {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Professional Doctor Form - Wide Layout */
@@ -4060,8 +4272,8 @@ textarea.cyber-input {
   gap: 1.5rem;
 }
 
-.form-right-section > .form-group:first-child,
-.form-right-section > .form-group:nth-child(2) {
+.form-right-section>.form-group:first-child,
+.form-right-section>.form-group:nth-child(2) {
   grid-column: 1 / -1;
 }
 
@@ -4122,11 +4334,11 @@ textarea.cyber-input {
   .doctor-form-horizontal {
     grid-template-columns: 1fr;
   }
-  
+
   .form-right-section {
     grid-template-columns: 1fr;
   }
-  
+
   .doctor-modal {
     width: 95vw !important;
     padding: 1.5rem !important;
@@ -4192,8 +4404,8 @@ textarea.cyber-input {
   gap: 1rem;
 }
 
-.form-right-section > .form-group:first-child,
-.form-right-section > .form-group:nth-child(2) {
+.form-right-section>.form-group:first-child,
+.form-right-section>.form-group:nth-child(2) {
   grid-column: 1 / -1;
 }
 
@@ -4256,26 +4468,26 @@ textarea.cyber-input {
   .modal-overlay {
     padding: 1rem;
   }
-  
+
   .doctor-modal {
     width: 95vw !important;
     max-height: 85vh !important;
     padding: 1.5rem !important;
   }
-  
+
   .doctor-modal h2 {
     font-size: 1.3rem;
   }
-  
+
   .doctor-form-horizontal {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .form-right-section {
     grid-template-columns: 1fr;
   }
-  
+
   .image-preview-compact,
   .upload-placeholder-compact {
     width: 120px;
@@ -4287,20 +4499,20 @@ textarea.cyber-input {
   .doctor-modal {
     padding: 1rem !important;
   }
-  
+
   .doctor-modal h2 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
   }
-  
+
   .form-group label {
     font-size: 0.85rem;
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
-  
+
   .modal-actions button {
     width: 100%;
   }
@@ -4391,18 +4603,35 @@ textarea.cyber-input {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes spin-reverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Doctor Form Page Layout */
@@ -4450,16 +4679,172 @@ textarea.cyber-input {
   .doctor-form-layout {
     grid-template-columns: 1fr;
   }
-  
+
   .doctor-form-card {
     padding: 1.5rem;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .form-actions button {
     width: 100%;
   }
+}
+
+
+/* Doctor Validation Results in Patient Panel */
+.doctor-validation {
+  background: rgba(0, 217, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-blue);
+  margin-bottom: 1.5rem;
+}
+
+.doctor-validation h4 {
+  color: var(--primary-blue);
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.validation-result {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.validation-result .label {
+  color: var(--light-text);
+  font-weight: 600;
+}
+
+.diagnosis-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.diagnosis-badge.benigno {
+  background: rgba(0, 230, 118, 0.2);
+  color: var(--success-green);
+  border: 2px solid var(--success-green);
+}
+
+.diagnosis-badge.maligno {
+  background: rgba(255, 82, 82, 0.2);
+  color: var(--danger-red);
+  border: 2px solid var(--danger-red);
+}
+
+.lesion-type {
+  color: var(--dark-text);
+  font-weight: 600;
+  background: rgba(0, 191, 165, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+/* Star Rating Component */
+.star-rating {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.star-rating.interactive {
+  cursor: pointer;
+}
+
+.star-rating.readonly {
+  cursor: default;
+}
+
+.star-rating .star {
+  transition: all 0.2s ease;
+  color: var(--warning-orange);
+}
+
+.star-rating.interactive .star {
+  cursor: pointer;
+}
+
+.star-rating.interactive .star:hover {
+  transform: scale(1.2);
+}
+
+.star-rating .star.filled {
+  color: var(--warning-orange);
+}
+
+.star-rating .star.empty {
+  color: var(--border-color);
+}
+
+/* Star sizes */
+.star-rating.star-small .star {
+  width: 16px;
+  height: 16px;
+}
+
+.star-rating.star-medium .star {
+  width: 20px;
+  height: 20px;
+}
+
+.star-rating.star-large .star {
+  width: 28px;
+  height: 28px;
+}
+
+/* Rating section in consultations */
+.consultation-rating {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 152, 0, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid var(--warning-orange);
+}
+
+.consultation-rating h4 {
+  color: var(--warning-orange);
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.consultation-rating p {
+  margin: 0 0 0.75rem 0;
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.consultation-rating .rating-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--dark-text);
+  font-weight: 600;
+}
+
+/* Doctor rating display */
+.doctor-rating-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.doctor-rating-display .rating-value {
+  color: var(--warning-orange);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.doctor-rating-display .rating-count {
+  color: var(--light-text);
+  font-size: 0.85rem;
 }

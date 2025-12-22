@@ -48,9 +48,7 @@ export async function saveAnalysis(analysisData, imageDataUrl, userId = null) {
 
             // Details (SOLO LOS ESENCIALES)
             lesion_type: analysisData.details?.type,
-            risk_level: analysisData.details?.risk,
-            asymmetry: analysisData.details?.characteristics?.asymmetry,
-            border: analysisData.details?.characteristics?.border
+            risk_level: analysisData.details?.risk
         }
 
         console.log('💾 Insertando en base de datos...', record)

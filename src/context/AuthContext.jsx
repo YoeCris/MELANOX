@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
                 .from('doctors')
                 .select('id, user_id, email')
                 .eq('user_id', user.id)
-                .single()
+                .maybeSingle()
 
             // Si no se encontró por user_id, buscar por email
             if (error || !data) {
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
                     .from('doctors')
                     .select('id, user_id, email')
                     .eq('email', user.email)
-                    .single()
+                    .maybeSingle()
 
                 if (doctorByEmail && !emailError) {
                     // Vincular el user_id si aún no está vinculado
