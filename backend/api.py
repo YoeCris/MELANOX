@@ -16,10 +16,10 @@ from model_loader import ModelLoader
 # Initialize Flask app
 app = Flask(__name__)
 
-# Configure CORS
+# Configure CORS - Allow all origins temporarily
 CORS(app, resources={
     r"/api/*": {
-        "origins": Config.CORS_ORIGINS,
+        "origins": "*",
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
