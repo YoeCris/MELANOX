@@ -15,6 +15,7 @@ export async function analyzeImage(imageDataUrl) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({
                 image: imageDataUrl
@@ -45,7 +46,11 @@ export async function analyzeImage(imageDataUrl) {
  */
 export async function checkHealth() {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/health`);
+        const response = await fetch(`${API_BASE_URL}/api/health`, {
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -64,7 +69,11 @@ export async function checkHealth() {
  */
 export async function getModelInfo() {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/model-info`);
+        const response = await fetch(`${API_BASE_URL}/api/model-info`, {
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
