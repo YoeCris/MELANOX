@@ -3,11 +3,9 @@ services:
     name: melanox-api
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn api:app --bind 0.0.0.0:$PORT --timeout 120 --workers 1 --threads 2 --worker-class sync --max-requests 100 --max-requests-jitter 10"
+    startCommand: "gunicorn api:app"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: PORT
-        value: 10000
-      - key: WEB_CONCURRENCY
-        value: 1
+        value: 5000
